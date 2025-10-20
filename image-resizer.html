@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Resizer | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    #downloadBtn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Simplifying your digital life</p>
+  </header>
+
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">
+      🖼️ Image Resizer
+    </h2>
+    <p class="text-gray-600 text-center mb-6">
+      Upload an image, set custom width and height, preview, and download your resized version.
+    </p>
+
+    <!-- Upload -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <input
+        type="file"
+        id="uploadInput"
+        accept="image/*"
+        class="border border-blue-300 rounded-md px-3 py-2 w-full sm:w-2/3 cursor-pointer"
+      />
+      <label class="text-gray-600 text-sm">Supported formats: JPG, PNG, WEBP</label>
+    </div>
+
+    <!-- Width and Height Inputs -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div>
+        <label for="widthInput" class="block font-medium text-gray-700 mb-2">Width (px):</label>
+        <input
+          type="number"
+          id="widthInput"
+          placeholder="e.g. 800"
+          class="border border-gray-300 rounded-md px-3 py-2 w-full"
+        />
+      </div>
+      <div>
+        <label for="heightInput" class="block font-medium text-gray-700 mb-2">Height (px):</label>
+        <input
+          type="number"
+          id="heightInput"
+          placeholder="e.g. 600"
+          class="border border-gray-300 rounded-md px-3 py-2 w-full"
+        />
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview text-center mb-6">
+      <p id="previewText" class="text-gray-500">No image selected</p>
+      <img id="previewImage" src="" alt="" class="hidden mx-auto" />
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+      <button
+        id="resizeBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition disabled:opacity-60"
+        disabled
+      >
+        Resize Image
+      </button>
+      <a
+        id="downloadBtn"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition"
+        download="resized-image.jpg"
+      >
+        Download Resized
+      </a>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact: <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">onetoolbox002@gmail.com</a>
+  </footer>
+
+  <script>
+    const uploadInput = document.getElementById('uploadInput');
+    const previewImage = document.getElementById('previewImage');
+    const previewText = document.getElementById('previewText');
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const resizeBtn = document.getElementById('resizeBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let selectedFile = null;
+
+    // Handle file upload
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectedFile = file;
+      const url = URL.createObjectURL(file);
+      previewImage.src = url;
+      previewImage.classList.remove('hidden');
+      previewText.classList.add('hidden');
+      resizeBtn.disabled = false;
+    });
+
+    // Resize Image
+    resizeBtn.addEventListener('click', () => {
+      if (!selectedFile) return alert('Please select an image first.');
+
+      const customWidth = parseInt(widthInput.value);
+      const customHeight = parseInt(heightInput.value);
+
+      if (!customWidth || !customHeight || customWidth <= 0 || customHeight <= 0) {
+        alert('Please enter valid width and height values.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = customWidth;
+          canvas.height = customHeight;
+          ctx.drawImage(img, 0, 0, customWidth, customHeight);
+
+          canvas.toBlob((blob) => {
+            const resizedUrl = URL.createObjectURL(blob);
+            previewImage.src = resizedUrl;
+            downloadBtn.href = resizedUrl;
+            downloadBtn.style.display = 'inline-block';
+          }, 'image/jpeg');
+        };
+      };
+      reader.readAsDataURL(selectedFile);
+    });
+  </script>
+</body>
+</html>
