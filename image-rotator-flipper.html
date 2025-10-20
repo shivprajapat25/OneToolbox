@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Rotator & Flipper | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 750px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    canvas {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      margin-top: 12px;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Simplifying your digital life</p>
+  </header>
+
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">
+      🔄 Image Rotator & Flipper
+    </h2>
+    <p class="text-gray-600 text-center mb-6">
+      Upload an image and rotate or flip it instantly.
+    </p>
+
+    <!-- Upload -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <input
+        type="file"
+        id="uploadInput"
+        accept="image/*"
+        class="border border-blue-300 rounded-md px-3 py-2 w-full sm:w-2/3 cursor-pointer"
+      />
+      <label class="text-gray-600 text-sm">Supported formats: JPG, PNG, WEBP</label>
+    </div>
+
+    <!-- Canvas Preview -->
+    <div class="text-center mb-6">
+      <canvas id="canvas" class="hidden mx-auto"></canvas>
+      <p id="previewText" class="text-gray-500">No image selected</p>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center mb-6">
+      <button id="rotateLeft" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:opacity-60" disabled>
+        ⏪ Rotate Left
+      </button>
+      <button id="rotateRight" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:opacity-60" disabled>
+        ⏩ Rotate Right
+      </button>
+      <button id="flipH" class="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md disabled:opacity-60" disabled>
+        ↔️ Flip Horizontal
+      </button>
+      <button id="flipV" class="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md disabled:opacity-60" disabled>
+        ↕️ Flip Vertical
+      </button>
+    </div>
+
+    <!-- Download -->
+    <div class="text-center">
+      <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition disabled:opacity-60" disabled>
+        Download Image
+      </button>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600"
+      >onetoolbox002@gmail.com</a
+    >
+  </footer>
+
+  <script>
+    const uploadInput = document.getElementById("uploadInput");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const previewText = document.getElementById("previewText");
+    const buttons = {
+      rotateLeft: document.getElementById("rotateLeft"),
+      rotateRight: document.getElementById("rotateRight"),
+      flipH: document.getElementById("flipH"),
+      flipV: document.getElementById("flipV"),
+      downloadBtn: document.getElementById("downloadBtn"),
+    };
+
+    let image = new Image();
+    let rotation = 0;
+    let flipH = 1;
+    let flipV = 1;
+
+    // Upload image
+    uploadInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        image.onload = () => {
+          canvas.width = image.width;
+          canvas.height = image.height;
+          drawImage();
+          canvas.classList.remove("hidden");
+          previewText.classList.add("hidden");
+          enableButtons();
+        };
+        image.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Enable buttons
+    function enableButtons() {
+      Object.values(buttons).forEach((btn) => (btn.disabled = false));
+    }
+
+    // Draw image with transformations
+    function drawImage() {
+      const w = image.width;
+      const h = image.height;
+      canvas.width = w;
+      canvas.height = h;
+
+      ctx.save();
+      ctx.clearRect(0, 0, w, h);
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(flipH, flipV);
+      ctx.rotate((rotation * Math.PI) / 180);
+      ctx.drawImage(image, -w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+
+    // Rotate & Flip actions
+    buttons.rotateLeft.addEventListener("click", () => {
+      rotation -= 90;
+      drawImage();
+    });
+    buttons.rotateRight.addEventListener("click", () => {
+      rotation += 90;
+      drawImage();
+    });
+    buttons.flipH.addEventListener("click", () => {
+      flipH *= -1;
+      drawImage();
+    });
+    buttons.flipV.addEventListener("click", () => {
+      flipV *= -1;
+      drawImage();
+    });
+
+    // Download image
+    buttons.downloadBtn.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.download = "modified-image.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  </script>
+</body>
+</html>
