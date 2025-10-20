@@ -3,177 +3,206 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>One Tool box - Your Daily Tools, All in One Place</title>
+  <title>One Tool box</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
-    .tool-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,123,255,0.15); }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #f9fafb;
+      color: #1e293b;
+      font-family: 'Poppins', sans-serif;
+    }
+    .tool-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
-<body class="bg-[#F5F9FF] text-gray-800">
+<body class="overflow-x-hidden">
 
   <!-- Header -->
-  <header class="bg-white shadow-md fixed w-full top-0 z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-2xl font-semibold text-blue-600">One <span class="text-gray-900">Tool box</span></h1>
-      <nav class="hidden md:flex gap-6 text-gray-700">
-        <a href="#home" class="hover:text-blue-600">Home</a>
-        <a href="#tools" class="hover:text-blue-600">Tools</a>
-        <a href="#contact" class="hover:text-blue-600">Contact</a>
+  <header class="bg-blue-600 text-white py-4 shadow">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
+      <h1 class="text-2xl font-semibold">One Tool box</h1>
+      <nav class="space-x-6 hidden md:block">
+        <a href="#home" class="hover:underline">Home</a>
+        <a href="#tools" class="hover:underline">Tools</a>
+        <a href="#contact" class="hover:underline">Contact</a>
       </nav>
-      <button class="md:hidden text-2xl" id="menu-btn">☰</button>
-    </div>
-    <div id="mobile-menu" class="hidden md:hidden flex flex-col bg-white text-center pb-4">
-      <a href="#home" class="py-2 hover:text-blue-600">Home</a>
-      <a href="#tools" class="py-2 hover:text-blue-600">Tools</a>
-      <a href="#contact" class="py-2 hover:text-blue-600">Contact</a>
     </div>
   </header>
 
-  <script>
-    const btn = document.getElementById('menu-btn');
-    const menu = document.getElementById('mobile-menu');
-    btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-  </script>
+  <!-- Hero Section -->
+  <section id="home" class="text-center py-20 bg-gradient-to-b from-blue-50 to-white">
+    <h2 class="text-4xl font-bold mb-4 text-blue-700">Your Daily Tools, All in One Place</h2>
+    <p class="text-gray-600 mb-6">Convert, calculate, compress, and simplify your everyday tasks — fast and free.</p>
+    <a href="#tools" class="bg-blue-600 text-white px-6 py-3 rounded-md text-lg hover:bg-blue-700 transition">Explore Tools</a>
 
-  <!-- Hero -->
-  <section id="home" class="pt-28 pb-16 text-center px-4 bg-gradient-to-b from-blue-50 to-white">
-    <h2 class="text-4xl font-bold text-gray-800 mb-4">Your Daily Tools, All in One Place</h2>
-    <p class="text-lg text-gray-600 mb-6">Convert, calculate, compress, and simplify your everyday tasks — fast and free.</p>
-    <a href="#tools" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">Explore Tools</a>
-    <div class="flex justify-center mt-10 flex-wrap gap-6">
-      <div class="w-16 h-16 bg-blue-100 flex items-center justify-center rounded-full text-blue-600 text-2xl">🖼</div>
-      <div class="w-16 h-16 bg-blue-100 flex items-center justify-center rounded-full text-blue-600 text-2xl">📄</div>
-      <div class="w-16 h-16 bg-blue-100 flex items-center justify-center rounded-full text-blue-600 text-2xl">🧮</div>
-      <div class="w-16 h-16 bg-blue-100 flex items-center justify-center rounded-full text-blue-600 text-2xl">🔤</div>
+    <!-- Category Icons -->
+    <div class="max-w-5xl mx-auto mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4 text-center">
+      <a href="#image-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Image</p>
+      </a>
+      <a href="#document-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Document</p>
+      </a>
+      <a href="#audio-video-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/727/727240.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Audio/Video</p>
+      </a>
+      <a href="#calculator-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/1165/1165674.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Calculator</p>
+      </a>
+      <a href="#text-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Text</p>
+      </a>
+      <a href="#web-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Web</p>
+      </a>
+      <a href="#color-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/3989/3989671.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Color</p>
+      </a>
+      <a href="#utility-tools" class="group bg-white rounded-xl shadow p-3 hover:bg-blue-50 transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/846/846551.png" class="w-10 mx-auto" />
+        <p class="text-sm text-blue-700 mt-1 group-hover:underline">Utility</p>
+      </a>
     </div>
   </section>
 
-  <!-- Search -->
-  <div class="flex justify-center px-4 mb-12">
-    <input type="text" id="search" placeholder="Search a tool…" class="w-full max-w-lg px-5 py-3 rounded-full shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+  <!-- Search Bar -->
+  <div class="max-w-3xl mx-auto px-4 mt-8 mb-4">
+    <input id="searchInput" type="text" placeholder="Search a tool…" 
+      class="w-full p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
   </div>
 
-  <!-- All Tools -->
-  <section id="tools" class="max-w-7xl mx-auto px-4 space-y-16">
+  <!-- TOOL SECTIONS -->
+  <section id="tools" class="max-w-7xl mx-auto px-4 py-10 space-y-16">
 
     <!-- 🖼 Image Tools -->
-    <div>
+    <div id="image-tools">
       <h3 class="text-2xl font-semibold mb-2">🖼 Image Tools</h3>
-      <p class="text-gray-600 mb-6">Edit, convert, and optimize your images quickly.</p>
+      <p class="text-gray-600 mb-6">Convert, compress, and modify images easily.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow hover:shadow-lg transition"><h4 class="font-semibold mb-2">Image Converter</h4><p class="text-sm text-gray-600 mb-3">Convert between JPG, PNG, WEBP formats.</p><a href="image-Converter.html" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Image Compressor</h4><p class="text-sm text-gray-600 mb-3">Reduce image file size easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Image Resizer</h4><p class="text-sm text-gray-600 mb-3">Adjust image dimensions instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Image Cropper</h4><p class="text-sm text-gray-600 mb-3">Crop and trim your images easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Image to Text (OCR)</h4><p class="text-sm text-gray-600 mb-3">Extract text from any image file.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Image Rotator/Flipper</h4><p class="text-sm text-gray-600 mb-3">Rotate or flip images instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image Converter</h4><p>Convert images into JPG, PNG, or WebP.</p><a href="image-Converter.html" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image Compressor</h4><p>Reduce file size without losing quality.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image Resizer</h4><p>Resize any image to custom dimensions.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image Cropper</h4><p>Crop images instantly online.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image to Text (OCR)</h4><p>Extract text from image using OCR.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Image Rotator/Flipper</h4><p>Rotate or flip your images easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
     <!-- 📄 Document Tools -->
-    <div>
+    <div id="document-tools">
       <h3 class="text-2xl font-semibold mb-2">📄 Document Tools</h3>
-      <p class="text-gray-600 mb-6">Handle your PDFs and documents efficiently.</p>
+      <p class="text-gray-600 mb-6">Convert, merge, and secure your documents.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">PDF to Word / Word to PDF</h4><p class="text-sm text-gray-600 mb-3">Convert between formats easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">PDF Compressor</h4><p class="text-sm text-gray-600 mb-3">Compress PDF file size efficiently.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">PDF Merger & Splitter</h4><p class="text-sm text-gray-600 mb-3">Merge or split your PDF files.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Document Converter</h4><p class="text-sm text-gray-600 mb-3">Convert documents between formats.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">PDF Lock/Unlock</h4><p class="text-sm text-gray-600 mb-3">Add or remove password protection.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">E-Sign PDF</h4><p class="text-sm text-gray-600 mb-3">Sign your PDF documents online.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>PDF to Word / Word to PDF</h4><p>Convert PDFs and Docs easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>PDF Compressor</h4><p>Reduce PDF file size efficiently.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>PDF Merger & Splitter</h4><p>Merge or split PDF documents quickly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Document Converter</h4><p>Convert DOC, TXT, PDF, and more.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>PDF Lock/Unlock</h4><p>Secure or open password PDFs.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>ESign PDF</h4><p>Sign documents digitally with ease.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
-    <!-- 🎧 Audio & Video Tools -->
-    <div>
-      <h3 class="text-2xl font-semibold mb-2">🎧 Audio & Video Tools</h3>
-      <p class="text-gray-600 mb-6">Convert or compress your media files easily.</p>
+    <!-- 🎵 Audio & Video Tools -->
+    <div id="audio-video-tools">
+      <h3 class="text-2xl font-semibold mb-2">🎵 Audio & Video Tools</h3>
+      <p class="text-gray-600 mb-6">Convert and compress your media files.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Video Converter</h4><p class="text-sm text-gray-600 mb-3">Convert videos into multiple formats.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4 class="font-semibold mb-2">Video Compressor</h4><p class="text-sm text-gray-600 mb-3">Reduce video file size easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Video Converter</h4><p>Convert video into MP4, MOV, etc.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Video Compressor</h4><p>Compress videos for faster upload.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
     <!-- 🧮 Calculator Tools -->
-    <div>
+    <div id="calculator-tools">
       <h3 class="text-2xl font-semibold mb-2">🧮 Calculator Tools</h3>
-      <p class="text-gray-600 mb-6">Smart calculators for all your daily needs.</p>
+      <p class="text-gray-600 mb-6">Calculate smartly in one place.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Scientific Calculator</h4><p class="text-sm text-gray-600 mb-3">Perform complex calculations.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Age Calculator</h4><p class="text-sm text-gray-600 mb-3">Find your exact age in years/days.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>BMI Calculator</h4><p class="text-sm text-gray-600 mb-3">Calculate your Body Mass Index.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Loan EMI Calculator</h4><p class="text-sm text-gray-600 mb-3">Estimate your loan installments.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>GST Calculator</h4><p class="text-sm text-gray-600 mb-3">Calculate GST easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Currency Converter</h4><p class="text-sm text-gray-600 mb-3">Convert between currencies.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Scientific Calculator</h4><p>Perform advanced calculations easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Age Calculator</h4><p>Calculate age by date of birth.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>BMI Calculator</h4><p>Find your body mass index instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Loan EMI Calculator</h4><p>Calculate your monthly loan EMIs.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>GST Calculator</h4><p>Compute GST with accurate results.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Currency Converter</h4><p>Convert one currency to another.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
     <!-- 🔤 Text Tools -->
-    <div>
+    <div id="text-tools">
       <h3 class="text-2xl font-semibold mb-2">🔤 Text Tools</h3>
-      <p class="text-gray-600 mb-6">Transform and manipulate text easily.</p>
+      <p class="text-gray-600 mb-6">Edit and process your text online.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Case Converter</h4><p class="text-sm text-gray-600 mb-3">Change upper/lower/title case.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Word & Character Counter</h4><p class="text-sm text-gray-600 mb-3">Count words and characters.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Remove Duplicate Lines</h4><p class="text-sm text-gray-600 mb-3">Clean up repetitive lines.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Sorter</h4><p class="text-sm text-gray-600 mb-3">Sort lines alphabetically.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Reverser</h4><p class="text-sm text-gray-600 mb-3">Reverse your text content.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Encryptor/Decryptor</h4><p class="text-sm text-gray-600 mb-3">Encrypt or decrypt your text.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Case Converter</h4><p>Change text to upper/lower/title case.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Word & Character Counter</h4><p>Count words and characters quickly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Remove Duplicate Lines</h4><p>Clean up repetitive lines in text.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Sorter</h4><p>Sort lines alphabetically or numerically.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Reverser</h4><p>Reverse any text instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Text Encryptor/Decryptor</h4><p>Secure your text with encryption.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
-    <!-- 🌐 Web/Developer Tools -->
-    <div>
+    <!-- 🌐 Web Tools -->
+    <div id="web-tools">
       <h3 class="text-2xl font-semibold mb-2">🌐 Web/Developer Tools</h3>
-      <p class="text-gray-600 mb-6">Simplify your development workflow.</p>
+      <p class="text-gray-600 mb-6">Handy tools for developers and coders.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>HTML/CSS/JS Minifier</h4><p class="text-sm text-gray-600 mb-3">Minify your code files.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>JSON Formatter & Validator</h4><p class="text-sm text-gray-600 mb-3">Beautify and validate JSON.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Base64 Encoder/Decoder</h4><p class="text-sm text-gray-600 mb-3">Encode or decode Base64 strings.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>URL Encoder/Decoder</h4><p class="text-sm text-gray-600 mb-3">Convert URLs safely.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Picker & Converter</h4><p class="text-sm text-gray-600 mb-3">Pick and convert color codes.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Regex Tester</h4><p class="text-sm text-gray-600 mb-3">Test regular expressions easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>HTML/CSS/JS Minifier</h4><p>Minify your code for fast websites.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>JSON Formatter & Validator</h4><p>Beautify and validate JSON data.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Base64 Encoder/Decoder</h4><p>Encode and decode Base64 text.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>URL Encoder/Decoder</h4><p>Encode or decode URLs easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Picker & Converter</h4><p>Pick and convert color codes.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Regex Tester</h4><p>Test regular expressions live.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
     <!-- 🎨 Color Tools -->
-    <div>
+    <div id="color-tools">
       <h3 class="text-2xl font-semibold mb-2">🎨 Color Tools</h3>
-      <p class="text-gray-600 mb-6">Design-ready tools for every color task.</p>
+      <p class="text-gray-600 mb-6">Generate and check color palettes easily.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Picker from Image</h4><p class="text-sm text-gray-600 mb-3">Pick colors directly from images.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>HEX to RGB Converter</h4><p class="text-sm text-gray-600 mb-3">Convert HEX to RGB codes.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Gradient Generator</h4><p class="text-sm text-gray-600 mb-3">Create CSS gradients easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Contrast Checker</h4><p class="text-sm text-gray-600 mb-3">Check color contrast ratios.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Palette Generator</h4><p class="text-sm text-gray-600 mb-3">Generate color palettes easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Blindness Simulator</h4><p class="text-sm text-gray-600 mb-3">Preview designs for accessibility.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Picker from Image</h4><p>Extract colors from uploaded image.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>HEX to RGB Converter</h4><p>Convert color codes instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Gradient Generator</h4><p>Create beautiful color gradients.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Contrast Checker</h4><p>Check text color accessibility.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Palette Generator</h4><p>Create matching color schemes.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Color Blindness Simulator</h4><p>Preview colors for accessibility.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
-    <!-- 🌍 SEO & Marketing Tools -->
-    <div>
+    <!-- 🌍 SEO Tools -->
+    <div id="seo-tools">
       <h3 class="text-2xl font-semibold mb-2">🌍 SEO & Marketing Tools</h3>
-      <p class="text-gray-600 mb-6">Boost your content and optimize SEO.</p>
+      <p class="text-gray-600 mb-6">Optimize and analyze your web content.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Keyword Density Checker</h4><p class="text-sm text-gray-600 mb-3">Analyze keyword frequency.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Meta Tag Analyzer</h4><p class="text-sm text-gray-600 mb-3">Check your meta tags easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Word Counter</h4><p class="text-sm text-gray-600 mb-3">Count total words instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Keyword Density Checker</h4><p>Analyze keyword usage in content.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Meta Tag Analyzer</h4><p>Check SEO meta tags for quality.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Word Counter</h4><p>Count words for SEO optimization.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
     <!-- 🛠 Utility Tools -->
-    <div>
+    <div id="utility-tools">
       <h3 class="text-2xl font-semibold mb-2">🛠 Utility Tools</h3>
-      <p class="text-gray-600 mb-6">Handy utilities for everyday digital work.</p>
+      <p class="text-gray-600 mb-6">Everyday useful utilities for quick access.</p>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>QR Code Generator & Scanner</h4><p class="text-sm text-gray-600 mb-3">Generate or scan QR codes.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Barcode Generator</h4><p class="text-sm text-gray-600 mb-3">Create barcodes easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>UUID Generator</h4><p class="text-sm text-gray-600 mb-3">Generate unique identifiers.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Unit Converter</h4><p class="text-sm text-gray-600 mb-3">Convert between measurement units.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Time Zone Converter</h4><p class="text-sm text-gray-600 mb-3">Convert time zones easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
-        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Random Number/Password Generator</h4><p class="text-sm text-gray-600 mb-3">Generate secure random values.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>QR Code Generator & Scanner</h4><p>Create or scan QR codes easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Barcode Generator</h4><p>Generate barcodes instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>UUID Generator</h4><p>Create unique IDs instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Unit Converter</h4><p>Convert units of measurement easily.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Time Zone Converter</h4><p>Compare time zones instantly.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
+        <div class="tool-card bg-white p-5 rounded-2xl shadow"><h4>Random Number/Password Generator</h4><p>Generate secure random passwords.</p><a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Use Tool</a></div>
       </div>
     </div>
 
@@ -196,5 +225,20 @@
     </div>
   </footer>
 
+  <!-- Search Functionality -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById("searchInput");
+      const toolCards = document.querySelectorAll(".tool-card");
+
+      searchInput.addEventListener("keyup", () => {
+        const query = searchInput.value.toLowerCase().trim();
+        toolCards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          card.style.display = text.includes(query) ? "block" : "none";
+        });
+      });
+    });
+  </script>
 </body>
 </html>
