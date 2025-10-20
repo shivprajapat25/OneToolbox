@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Crop Tool | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    canvas {
+      max-width: 100%;
+      border-radius: 8px;
+      cursor: crosshair;
+    }
+    #downloadBtn {
+      display: none;
+    }
+    .crop-preview img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Simplifying your digital life</p>
+  </header>
+
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">
+      ✂️ Image Crop Tool
+    </h2>
+    <p class="text-gray-600 text-center mb-6">
+      Upload an image, select a crop area, preview, and download your cropped image.
+    </p>
+
+    <!-- Upload -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <input
+        type="file"
+        id="uploadInput"
+        accept="image/*"
+        class="border border-blue-300 rounded-md px-3 py-2 w-full sm:w-2/3 cursor-pointer"
+      />
+      <label class="text-gray-600 text-sm">Supported formats: JPG, PNG, WEBP</label>
+    </div>
+
+    <!-- Canvas for cropping -->
+    <div class="text-center mb-6">
+      <canvas id="imageCanvas"></canvas>
+      <p id="instructions" class="text-gray-500 text-sm mt-2 hidden">
+        Drag on the image to select crop area.
+      </p>
+    </div>
+
+    <!-- Preview -->
+    <div class="crop-preview text-center mb-6">
+      <p id="previewText" class="text-gray-500">No image selected</p>
+      <img id="croppedImage" src="" alt="" class="hidden mx-auto" />
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+      <button
+        id="cropBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition disabled:opacity-60"
+        disabled
+      >
+        Crop Image
+      </button>
+      <a
+        id="downloadBtn"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition"
+        download="cropped-image.jpg"
+      >
+        Download Cropped
+      </a>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact: <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">onetoolbox002@gmail.com</a>
+  </footer>
+
+  <script>
+    const uploadInput = document.getElementById('uploadInput');
+    const imageCanvas = document.getElementById('imageCanvas');
+    const ctx = imageCanvas.getContext('2d');
+    const cropBtn = document.getElementById('cropBtn');
+    const croppedImage = document.getElementById('croppedImage');
+    const previewText = document.getElementById('previewText');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const instructions = document.getElementById('instructions');
+
+    let image = new Image();
+    let isDragging = false;
+    let startX, startY, endX, endY;
+
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        image.src = event.target.result;
+        image.onload = function () {
+          imageCanvas.width = image.width > 600 ? 600 : image.width;
+          imageCanvas.height = (image.height / image.width) * imageCanvas.width;
+          ctx.drawImage(image, 0, 0, imageCanvas.width, imageCanvas.height);
+          previewText.classList.add('hidden');
+          cropBtn.disabled = false;
+          instructions.classList.remove('hidden');
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    imageCanvas.addEventListener('mousedown', (e) => {
+      if (!image.src) return;
+      isDragging = true;
+      const rect = imageCanvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+    });
+
+    imageCanvas.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const rect = imageCanvas.getBoundingClientRect();
+      endX = e.clientX - rect.left;
+      endY = e.clientY - rect.top;
+
+      ctx.drawImage(image, 0, 0, imageCanvas.width, imageCanvas.height);
+      ctx.strokeStyle = 'rgba(0, 120, 255, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+    });
+
+    imageCanvas.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    cropBtn.addEventListener('click', () => {
+      if (startX == null || startY == null || endX == null || endY == null) {
+        alert('Please select an area to crop.');
+        return;
+      }
+
+      const cropWidth = endX - startX;
+      const cropHeight = endY - startY;
+
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCanvas.width = cropWidth;
+      tempCanvas.height = cropHeight;
+
+      tempCtx.drawImage(
+        imageCanvas,
+        startX,
+        startY,
+        cropWidth,
+        cropHeight,
+        0,
+        0,
+        cropWidth,
+        cropHeight
+      );
+
+      const croppedData = tempCanvas.toDataURL('image/jpeg');
+      croppedImage.src = croppedData;
+      croppedImage.classList.remove('hidden');
+      downloadBtn.href = croppedData;
+      downloadBtn.style.display = 'inline-block';
+    });
+  </script>
+</body>
+</html>
