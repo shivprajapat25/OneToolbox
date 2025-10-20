@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Converter — One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand: #007BFF;
+      --bg: #FFFFFF;
+    }
+    body { font-family: 'Poppins', sans-serif; background: #F5F9FF; }
+    .dropzone {
+      transition: box-shadow .18s, transform .12s;
+    }
+    .dropzone.dragover { box-shadow: 0 10px 30px rgba(0,123,255,0.18); transform: translateY(-3px); }
+    /* ensure canvas hidden but accessible */
+    #work-canvas { display: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8">
+
+  <div class="max-w-4xl w-full px-4">
+    <!-- header -->
+    <header class="mb-6 flex items-center justify-between">
+      <div class="text-2xl font-semibold text-[#0b5ed7]">One <span class="text-gray-900">Tool box</span></div>
+      <nav class="text-sm text-gray-700 hidden sm:flex gap-4">
+        <a href="../index.html" class="hover:underline">Home</a>
+        <a href="../index.html#tools" class="hover:underline">All Tools</a>
+        <a href="mailto:onetoolbox002@gmail.com" class="hover:underline">Contact</a>
+      </nav>
+    </header>
+
+    <!-- card -->
+    <main class="bg-white rounded-2xl p-6 shadow-md">
+      <h1 class="text-2xl font-semibold mb-1">Image Converter & Compressor</h1>
+      <p class="text-gray-600 mb-6">Upload an image, choose format & quality, preview and download the converted/compressed file.</p>
+
+      <!-- uploader -->
+      <section class="mb-6">
+        <div id="dropzone" class="dropzone border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-white cursor-pointer">
+          <input id="file-input" type="file" accept="image/*" class="hidden" />
+          <div id="dz-content" class="flex flex-col items-center gap-3">
+            <div class="text-4xl">🖼️</div>
+            <div class="text-gray-700 font-medium">Drag & drop an image here or <button id="browse-btn" class="text-white ml-2 px-3 py-1 rounded bg-[#007BFF]">Browse</button></div>
+            <div class="text-sm text-gray-500">Supports JPG, PNG, WEBP. Max ~50MB (browser memory limits apply).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- preview & options -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <!-- preview -->
+        <div class="md:col-span-1">
+          <div class="rounded-lg border h-full p-3 flex flex-col items-center justify-start gap-3">
+            <div id="preview-wrap" class="w-full flex items-center justify-center">
+              <img id="preview" alt="Preview" class="max-w-full max-h-48 object-contain rounded-md hidden" />
+              <div id="preview-empty" class="text-gray-400">No image selected</div>
+            </div>
+            <div class="w-full text-sm text-gray-600">
+              <div><strong>Original:</strong> <span id="orig-info">—</span></div>
+              <div class="mt-1"><strong>Output:</strong> <span id="out-info">—</span></div>
+            </div>
+            <div class="w-full mt-3">
+              <button id="reset-btn" class="w-full bg-gray-100 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-200">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- controls -->
+        <div class="md:col-span-2">
+          <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+            <!-- Format -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+              <div class="flex gap-3">
+                <label class="inline-flex items-center gap-2">
+                  <input type="radio" name="format" value="image/jpeg" checked class="form-radio" />
+                  <span class="text-sm">JPEG</span>
+                </label>
+                <label class="inline-flex items-center gap-2">
+                  <input type="radio" name="format" value="image/png" class="form-radio" />
+                  <span class="text-sm">PNG</span>
+                </label>
+                <label class="inline-flex items-center gap-2">
+                  <input type="radio" name="format" value="image/webp" class="form-radio" />
+                  <span class="text-sm">WEBP</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Quality -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Quality (for JPEG/WEBP)</label>
+              <div class="flex items-center gap-3">
+                <input id="quality" type="range" min="0.1" max="1" step="0.05" value="0.85" class="w-full" />
+                <div id="quality-val" class="w-14 text-right text-sm text-gray-700">85%</div>
+              </div>
+            </div>
+
+            <!-- Resize -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Resize (optional)</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="width" type="number" min="1" placeholder="Width (px)" class="px-3 py-2 rounded-md border" />
+                <input id="height" type="number" min="1" placeholder="Height (px)" class="px-3 py-2 rounded-md border" />
+              </div>
+              <div class="text-xs text-gray-500 mt-1">Leave empty to keep original dimensions (aspect ratio will be preserved if only one is set).</div>
+            </div>
+
+            <!-- advanced: preserve aspect -->
+            <div class="flex items-center gap-3">
+              <label class="inline-flex items-center gap-2">
+                <input id="preserve-aspect" type="checkbox" checked />
+                <span class="text-sm text-gray-700">Preserve aspect ratio</span>
+              </label>
+              <span class="text-xs text-gray-500"> (if you set only one side)</span>
+            </div>
+
+            <!-- action buttons -->
+            <div class="flex gap-3 items-center">
+              <button id="convert-btn" class="bg-[#007BFF] hover:bg-[#006ee6] text-white px-4 py-2 rounded-md shadow">Convert & Download</button>
+              <button id="preview-btn" class="bg-white border border-gray-200 px-4 py-2 rounded-md">Preview Converted</button>
+              <div id="busy" class="hidden text-sm text-gray-600">Processing...</div>
+            </div>
+
+            <!-- download link -->
+            <div class="mt-2">
+              <a id="download-link" class="inline-block bg-green-600 text-white px-4 py-2 rounded-md hidden" download>Download Result</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- hidden canvas used for conversions -->
+      <canvas id="work-canvas" aria-hidden="true"></canvas>
+
+      <!-- small help footer -->
+      <section class="text-xs text-gray-500 mt-4">
+        Tip: For best compression use <strong>WEBP</strong> or <strong>JPEG</strong> with quality 0.6–0.85. PNG is lossless and won't shrink with quality.
+      </section>
+    </main>
+
+    <!-- credits / footer -->
+    <footer class="mt-6 text-center text-sm text-gray-500">
+      Made for <strong>One Tool box</strong> • Contact: <a href="mailto:onetoolbox002@gmail.com" class="underline">onetoolbox002@gmail.com</a>
+    </footer>
+  </div>
+
+  <script>
+    // Elements
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const browseBtn = document.getElementById('browse-btn');
+    const preview = document.getElementById('preview');
+    const previewEmpty = document.getElementById('preview-empty');
+    const origInfo = document.getElementById('orig-info');
+    const outInfo = document.getElementById('out-info');
+    const resetBtn = document.getElementById('reset-btn');
+    const quality = document.getElementById('quality');
+    const qualityVal = document.getElementById('quality-val');
+    const widthInput = document.getElementById('width');
+    const heightInput = document.getElementById('height');
+    const preserveAspect = document.getElementById('preserve-aspect');
+    const convertBtn = document.getElementById('convert-btn');
+    const previewBtn = document.getElementById('preview-btn');
+    const downloadLink = document.getElementById('download-link');
+    const busy = document.getElementById('busy');
+    const canvas = document.getElementById('work-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentFile = null;
+    let currentImage = null;
+    let lastResultBlob = null;
+
+    // Utility: format bytes
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // update quality label
+    quality.addEventListener('input', () => {
+      qualityVal.textContent = Math.round(quality.value * 100) + '%';
+    });
+
+    // drag & drop
+    ['dragenter', 'dragover'].forEach(ev => {
+      dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(ev => {
+      dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('dragover');
+      });
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length) {
+        handleFile(dt.files[0]);
+      }
+    });
+
+    // browse button
+    browseBtn.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    // handle file
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file (JPG, PNG, WEBP etc.)');
+        return;
+      }
+      currentFile = file;
+      const url = URL.createObjectURL(file);
+      preview.src = url;
+      preview.onload = () => {
+        preview.classList.remove('hidden');
+        previewEmpty.classList.add('hidden');
+        // save natural size info
+        origInfo.textContent = `${preview.naturalWidth}×${preview.naturalHeight} • ${formatBytes(file.size)}`;
+        outInfo.textContent = '—';
+        // load Image object for accurate drawing
+        currentImage = new Image();
+        currentImage.src = url;
+        currentImage.onload = () => {
+          // nothing else needed immediately
+        };
+      };
+      // reset previous result
+      downloadLink.classList.add('hidden');
+      lastResultBlob = null;
+    }
+
+    // reset
+    resetBtn.addEventListener('click', () => {
+      currentFile = null;
+      currentImage = null;
+      if (preview.src) URL.revokeObjectURL(preview.src);
+      preview.src = '';
+      preview.classList.add('hidden');
+      previewEmpty.classList.remove('hidden');
+      origInfo.textContent = '—';
+      outInfo.textContent = '—';
+      downloadLink.classList.add('hidden');
+      widthInput.value = '';
+      heightInput.value = '';
+      quality.value = 0.85;
+      qualityVal.textContent = '85%';
+    });
+
+    // preview converted (draw to canvas and show in preview area without download)
+    previewBtn.addEventListener('click', async () => {
+      if (!currentImage) { alert('Please upload an image first.'); return; }
+      busy.classList.remove('hidden');
+      await performConversion({ showOnly: true });
+      busy.classList.add('hidden');
+    });
+
+    // convert & download
+    convertBtn.addEventListener('click', async () => {
+      if (!currentImage) { alert('Please upload an image first.'); return; }
+      busy.classList.remove('hidden');
+      await performConversion({ showOnly: false });
+      busy.classList.add('hidden');
+    });
+
+    // core conversion logic
+    async function performConversion({ showOnly = false } = {}) {
+      // determine target mime and quality
+      const format = document.querySelector('input[name="format"]:checked').value;
+      const q = parseFloat(quality.value);
+
+      // choose target dimensions
+      let targetW = parseInt(widthInput.value) || null;
+      let targetH = parseInt(heightInput.value) || null;
+      const origW = currentImage.naturalWidth;
+      const origH = currentImage.naturalHeight;
+
+      // preserve aspect ratio behaviour
+      if (preserveAspect.checked) {
+        if (targetW && !targetH) {
+          targetH = Math.round((targetW / origW) * origH);
+        } else if (!targetW && targetH) {
+          targetW = Math.round((targetH / origH) * origW);
+        } else if (!targetW && !targetH) {
+          targetW = origW;
+          targetH = origH;
+        }
+      } else {
+        if (!targetW) targetW = origW;
+        if (!targetH) targetH = origH;
+      }
+
+      // ensure not enormous: clamp to reasonable browser limits
+      const MAX_DIM = 8000; // safety clamp
+      if (targetW > MAX_DIM || targetH > MAX_DIM) {
+        const scale = MAX_DIM / Math.max(targetW, targetH);
+        targetW = Math.round(targetW * scale);
+        targetH = Math.round(targetH * scale);
+      }
+
+      // set canvas and draw
+      canvas.width = targetW;
+      canvas.height = targetH;
+      // fill with white for formats with no transparency if original has transparency and output is JPEG
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // If source has transparency and output is jpeg, make background white:
+      if (format === 'image/jpeg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+      // Draw image covering the canvas while preserving aspect if sizes differ
+      // We will compute draw dims maintaining aspect between source and target
+      const sW = origW, sH = origH;
+      const tW = targetW, tH = targetH;
+      // compute scale to fit
+      const ratio = Math.min(tW / sW, tH / sH);
+      const drawW = Math.round(sW * ratio);
+      const drawH = Math.round(sH * ratio);
+      const offsetX = Math.round((tW - drawW) / 2);
+      const offsetY = Math.round((tH - drawH) / 2);
+      ctx.drawImage(currentImage, 0, 0, sW, sH, offsetX, offsetY, drawW, drawH);
+
+      // get blob (use toBlob for memory efficiency)
+      const getBlob = (mime, qualityVal) => new Promise((resolve) => {
+        // For PNG, the quality param is ignored by browsers
+        canvas.toBlob(resolve, mime, qualityVal);
+      });
+
+      // choose quality param only for JPEG/WEBP; for PNG browsers ignore
+      const blob = await getBlob(format, (format === 'image/png') ? undefined : q);
+      if (!blob) {
+        alert('Conversion failed — maybe the file is too large for your browser.');
+        return;
+      }
+
+      // update output info and show preview
+      outInfo.textContent = `${canvas.width}×${canvas.height} • ${formatBytes(blob.size)}`;
+
+      // create object URL
+      if (lastResultBlob) URL.revokeObjectURL(lastResultBlob);
+      lastResultBlob = URL.createObjectURL(blob);
+
+      // If showOnly: show converted preview in the preview area (replace current preview)
+      if (showOnly) {
+        preview.src = lastResultBlob;
+        preview.classList.remove('hidden');
+        previewEmpty.classList.add('hidden');
+        // keep download link hidden
+        downloadLink.classList.add('hidden');
+      } else {
+        // prepare download link
+        const ext = (format === 'image/jpeg') ? 'jpg' : (format === 'image/png') ? 'png' : 'webp';
+        const safeName = (currentFile && currentFile.name) ? currentFile.name.replace(/\.[^/.]+$/, '') : 'image';
+        downloadLink.href = lastResultBlob;
+        downloadLink.download = `${safeName}-converted.${ext}`;
+        downloadLink.textContent = `Download (${formatBytes(blob.size)})`;
+        downloadLink.classList.remove('hidden');
+        // Also update preview to converted version
+        preview.src = lastResultBlob;
+        preview.classList.remove('hidden');
+        previewEmpty.classList.add('hidden');
+      }
+    }
+
+    // cleanup object URLs on unload
+    window.addEventListener('beforeunload', () => {
+      if (lastResultBlob) URL.revokeObjectURL(lastResultBlob);
+      if (preview.src) URL.revokeObjectURL(preview.src);
+    });
+  </script>
+</body>
+</html>
