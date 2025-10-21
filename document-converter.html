@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Converter | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    #progressBar {
+      width: 0%;
+      height: 10px;
+      background-color: #3b82f6;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+    #downloadBtn {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Simplifying your digital life</p>
+  </header>
+
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">
+      📄 Document Converter
+    </h2>
+    <p class="text-gray-600 text-center mb-6">
+      Upload your document and convert it into another format (PDF, DOCX, or TXT).
+    </p>
+
+    <!-- Upload -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <input
+        type="file"
+        id="uploadInput"
+        accept=".pdf,.docx,.txt"
+        class="border border-blue-300 rounded-md px-3 py-2 w-full sm:w-2/3 cursor-pointer"
+      />
+      <label class="text-gray-600 text-sm">Supported formats: PDF, DOCX, TXT</label>
+    </div>
+
+    <!-- Format Selection -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <label for="outputFormat" class="font-medium text-gray-700">Convert To:</label>
+      <select
+        id="outputFormat"
+        class="border border-gray-300 rounded-md px-3 py-2 w-full sm:w-2/3"
+      >
+        <option value="pdf">PDF (.pdf)</option>
+        <option value="docx">Word (.docx)</option>
+        <option value="txt">Text (.txt)</option>
+      </select>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+      <div id="progressBar"></div>
+    </div>
+
+    <!-- Status -->
+    <p id="statusText" class="text-center text-gray-500 mb-6">No file selected</p>
+
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+      <button
+        id="convertBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition disabled:opacity-60"
+        disabled
+      >
+        Convert Document
+      </button>
+
+      <a
+        id="downloadBtn"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition"
+        download="converted-file"
+      >
+        Download File
+      </a>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <script>
+    const uploadInput = document.getElementById("uploadInput");
+    const convertBtn = document.getElementById("convertBtn");
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const outputFormat = document.getElementById("outputFormat");
+
+    let selectedFile = null;
+
+    // Handle file upload
+    uploadInput.addEventListener("change", (e) => {
+      selectedFile = e.target.files[0];
+      if (selectedFile) {
+        statusText.textContent = `Selected: ${selectedFile.name}`;
+        convertBtn.disabled = false;
+        progressBar.style.width = "0%";
+        downloadBtn.style.display = "none";
+      } else {
+        statusText.textContent = "No file selected";
+        convertBtn.disabled = true;
+      }
+    });
+
+    // Simulated Conversion Process
+    convertBtn.addEventListener("click", () => {
+      if (!selectedFile) {
+        alert("Please upload a file first.");
+        return;
+      }
+
+      convertBtn.disabled = true;
+      statusText.textContent = "Converting document...";
+      progressBar.style.width = "0%";
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            const outputType = outputFormat.value;
+            statusText.textContent = `Conversion completed! Download your ${outputType.toUpperCase()} file below.`;
+
+            // Simulated file output
+            const blob = new Blob(
+              ["This is a simulated converted document."],
+              { type: "application/octet-stream" }
+            );
+            const url = URL.createObjectURL(blob);
+            downloadBtn.href = url;
+            downloadBtn.download = `converted-file.${outputType}`;
+            downloadBtn.style.display = "inline-block";
+            convertBtn.disabled = false;
+          }, 400);
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>
