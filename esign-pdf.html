@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Sign PDF | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    canvas {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+    #previewBox {
+      border: 2px dashed #3b82f6;
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #64748b;
+    }
+    #progressBar {
+      width: 0%;
+      height: 10px;
+      background-color: #3b82f6;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+    #downloadBtn { display: none; }
+  </style>
+</head>
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Simplifying your digital life</p>
+  </header>
+
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">🖋️ E-Sign PDF Tool</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Upload a PDF, draw or type your signature, and download your signed document.
+    </p>
+
+    <!-- Upload -->
+    <div class="flex flex-col items-center gap-3 mb-6">
+      <input type="file" id="uploadInput" accept="application/pdf"
+        class="border border-blue-300 rounded-md px-3 py-2 w-full sm:w-2/3 cursor-pointer" />
+      <label class="text-gray-600 text-sm">Upload your PDF file</label>
+    </div>
+
+    <!-- Preview -->
+    <div id="previewBox" class="mb-6 text-center">
+      <p>No PDF uploaded yet</p>
+    </div>
+
+    <!-- Signature Options -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+      <button id="drawTab"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">Draw Signature</button>
+      <button id="typeTab"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-md transition">Type Signature</button>
+    </div>
+
+    <!-- Draw Signature Canvas -->
+    <div id="drawBox" class="text-center mb-6">
+      <canvas id="sigCanvas" width="500" height="200" class="mx-auto"></canvas>
+      <div class="flex justify-center gap-4 mt-3">
+        <button id="clearSig"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition">Clear</button>
+        <button id="useSig"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition">Use Signature</button>
+      </div>
+    </div>
+
+    <!-- Type Signature Input -->
+    <div id="typeBox" class="text-center hidden mb-6">
+      <input type="text" id="typedSig" placeholder="Type your name"
+        class="border border-gray-300 rounded-md px-4 py-2 w-2/3 mb-3 text-center" />
+      <button id="applyTypedSig"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">Apply Signature</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+      <div id="progressBar"></div>
+    </div>
+
+    <p id="statusText" class="text-center text-gray-500 mb-6">No file selected</p>
+
+    <!-- Download -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+      <button id="processBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition disabled:opacity-60"
+        disabled>Sign PDF</button>
+
+      <a id="downloadBtn"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition"
+        download="signed-document.pdf">Download Signed PDF</a>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <script>
+    const uploadInput = document.getElementById("uploadInput");
+    const previewBox = document.getElementById("previewBox");
+    const sigCanvas = document.getElementById("sigCanvas");
+    const ctx = sigCanvas.getContext("2d");
+    const clearSig = document.getElementById("clearSig");
+    const useSig = document.getElementById("useSig");
+    const processBtn = document.getElementById("processBtn");
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const drawTab = document.getElementById("drawTab");
+    const typeTab = document.getElementById("typeTab");
+    const drawBox = document.getElementById("drawBox");
+    const typeBox = document.getElementById("typeBox");
+    const typedSig = document.getElementById("typedSig");
+    const applyTypedSig = document.getElementById("applyTypedSig");
+
+    let drawing = false;
+    let signatureImage = null;
+    let pdfFile = null;
+
+    // Drawing functions
+    sigCanvas.addEventListener("mousedown", startDraw);
+    sigCanvas.addEventListener("mousemove", draw);
+    sigCanvas.addEventListener("mouseup", stopDraw);
+    sigCanvas.addEventListener("touchstart", startDraw);
+    sigCanvas.addEventListener("touchmove", draw);
+    sigCanvas.addEventListener("touchend", stopDraw);
+
+    function startDraw(e) {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(getX(e), getY(e));
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#1e40af";
+      ctx.lineTo(getX(e), getY(e));
+      ctx.stroke();
+    }
+
+    function stopDraw() {
+      drawing = false;
+    }
+
+    function getX(e) {
+      return e.clientX
+        ? e.clientX - sigCanvas.getBoundingClientRect().left
+        : e.touches[0].clientX - sigCanvas.getBoundingClientRect().left;
+    }
+
+    function getY(e) {
+      return e.clientY
+        ? e.clientY - sigCanvas.getBoundingClientRect().top
+        : e.touches[0].clientY - sigCanvas.getBoundingClientRect().top;
+    }
+
+    clearSig.addEventListener("click", () => ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height));
+
+    useSig.addEventListener("click", () => {
+      signatureImage = sigCanvas.toDataURL();
+      alert("Signature captured successfully!");
+      processBtn.disabled = false;
+    });
+
+    applyTypedSig.addEventListener("click", () => {
+      if (!typedSig.value.trim()) return alert("Please type your name.");
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = 500;
+      tempCanvas.height = 200;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.font = "48px Poppins";
+      tempCtx.fillStyle = "#1e40af";
+      tempCtx.textAlign = "center";
+      tempCtx.fillText(typedSig.value, 250, 100);
+      signatureImage = tempCanvas.toDataURL();
+      alert("Typed signature applied successfully!");
+      processBtn.disabled = false;
+    });
+
+    // Switch between tabs
+    drawTab.addEventListener("click", () => {
+      drawBox.classList.remove("hidden");
+      typeBox.classList.add("hidden");
+      drawTab.classList.add("bg-blue-600", "text-white");
+      typeTab.classList.remove("bg-blue-600", "text-white");
+      typeTab.classList.add("bg-gray-300", "text-gray-800");
+    });
+
+    typeTab.addEventListener("click", () => {
+      drawBox.classList.add("hidden");
+      typeBox.classList.remove("hidden");
+      typeTab.classList.add("bg-blue-600", "text-white");
+      drawTab.classList.remove("bg-blue-600", "text-white");
+      drawTab.classList.add("bg-gray-300", "text-gray-800");
+    });
+
+    // Handle file upload
+    uploadInput.addEventListener("change", (e) => {
+      pdfFile = e.target.files[0];
+      if (pdfFile) {
+        previewBox.innerHTML = `<p class="text-blue-600 font-medium">📄 ${pdfFile.name}</p>`;
+        statusText.textContent = `Selected: ${pdfFile.name}`;
+      } else {
+        previewBox.innerHTML = "<p>No PDF uploaded yet</p>";
+        statusText.textContent = "No file selected";
+      }
+    });
+
+    // Simulate signing process
+    processBtn.addEventListener("click", () => {
+      if (!pdfFile) return alert("Please upload a PDF first.");
+      if (!signatureImage) return alert("Please draw or type your signature first.");
+
+      processBtn.disabled = true;
+      statusText.textContent = "Applying signature to PDF...";
+      progressBar.style.width = "0%";
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + "%";
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            statusText.textContent = "PDF signed successfully!";
+            const blob = new Blob(
+              ["This is a simulated signed PDF file."],
+              { type: "application/pdf" }
+            );
+            const url = URL.createObjectURL(blob);
+            downloadBtn.href = url;
+            downloadBtn.style.display = "inline-block";
+            processBtn.disabled = false;
+          }, 400);
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>
