@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Currency Converter | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 12px;
+      width: 100%;
+      outline: none;
+      transition: 0.3s;
+    }
+    input:focus, select:focus, button:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 500;
+    }
+    .result-box {
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .result-value {
+      font-size: 1.8rem;
+      color: #1e40af;
+      font-weight: 600;
+    }
+    .swap-btn {
+      margin: 10px 0;
+      background-color: #10b981;  /* green accent for swap */
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media(max-width:480px) {
+      .result-value {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Currency Converter</p>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">💱 Currency Converter</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Select currencies, enter amount, and convert instantly using live rates.
+    </p>
+
+    <div class="flex flex-col gap-4">
+      <div>
+        <label for="amount" class="font-medium text-gray-700">Amount:</label>
+        <input type="number" id="amount" placeholder="Enter amount" value="1" />
+      </div>
+      <div>
+        <label for="fromCurrency" class="font-medium text-gray-700">From:</label>
+        <select id="fromCurrency">
+          <!-- options will be populated by script -->
+        </select>
+      </div>
+      <div>
+        <label for="toCurrency" class="font-medium text-gray-700">To:</label>
+        <select id="toCurrency">
+          <!-- options will be populated by script -->
+        </select>
+      </div>
+      <button id="swapBtn" class="swap-btn">⇄ Swap Currencies</button>
+    </div>
+
+    <div class="result-box">
+      <p class="text-gray-600 mb-2">Converted Amount:</p>
+      <p id="result" class="result-value">0.00</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const amountInput = document.getElementById('amount');
+    const fromSelect = document.getElementById('fromCurrency');
+    const toSelect = document.getElementById('toCurrency');
+    const resultEl = document.getElementById('result');
+    const swapBtn = document.getElementById('swapBtn');
+
+    // You can use this free API endpoint (no key) or choose your own with key
+    const API_URL = 'https://api.exchangerate-api.com/v4/latest/';
+
+    // Populate currency selects
+    fetch(API_URL + 'USD')
+      .then(res => res.json())
+      .then(data => {
+        const currencies = Object.keys(data.rates);
+        currencies.forEach(cur => {
+          const option1 = document.createElement('option');
+          option1.value = cur;
+          option1.textContent = cur;
+          fromSelect.appendChild(option1);
+          const option2 = document.createElement('option');
+          option2.value = cur;
+          option2.textContent = cur;
+          toSelect.appendChild(option2);
+        });
+        fromSelect.value = 'USD';
+        toSelect.value = 'INR';
+        calculate(); // initial calculate
+      })
+      .catch(err => {
+        console.error('Failed to fetch currency list', err);
+      });
+
+    function calculate() {
+      const amount = parseFloat(amountInput.value);
+      const from = fromSelect.value;
+      const to = toSelect.value;
+
+      if (!amount || amount < 0) {
+        resultEl.textContent = '0.00';
+        return;
+      }
+
+      fetch(API_URL + from)
+        .then(res => res.json())
+        .then(data => {
+          const rate = data.rates[to];
+          const converted = (amount * rate).toFixed(4);
+          resultEl.textContent = converted + ' ' + to;
+        })
+        .catch(err => {
+          console.error('Conversion error', err);
+          resultEl.textContent = 'Error';
+        });
+    }
+
+    amountInput.addEventListener('input', calculate);
+    fromSelect.addEventListener('change', calculate);
+    toSelect.addEventListener('change', calculate);
+
+    swapBtn.addEventListener('click', () => {
+      const tmp = fromSelect.value;
+      fromSelect.value = toSelect.value;
+      toSelect.value = tmp;
+      calculate();
+    });
+
+  </script>
+</body>
+</html>
