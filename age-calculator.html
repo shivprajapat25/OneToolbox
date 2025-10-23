@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    input[type="date"] {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      transition: 0.3s;
+    }
+    input[type="date"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    .result-box {
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .result-text {
+      font-size: 1.1rem;
+      color: #1e40af;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Age Calculator</p>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">🎂 Calculate Your Age</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Select your birthdate to find out your exact age in years, months, and days.
+    </p>
+
+    <!-- Date Input -->
+    <div class="flex flex-col items-center gap-4">
+      <label for="birthdate" class="font-medium text-gray-700">Enter Your Birthdate:</label>
+      <input type="date" id="birthdate" />
+    </div>
+
+    <!-- Results -->
+    <div class="result-box mt-6">
+      <p class="result-text">Years: <span id="years">0</span></p>
+      <p class="result-text">Months: <span id="months">0</span></p>
+      <p class="result-text">Days: <span id="days">0</span></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const birthdateInput = document.getElementById("birthdate");
+    const yearsDisplay = document.getElementById("years");
+    const monthsDisplay = document.getElementById("months");
+    const daysDisplay = document.getElementById("days");
+
+    birthdateInput.addEventListener("change", () => {
+      const birthDate = new Date(birthdateInput.value);
+      const today = new Date();
+
+      if (birthDate > today || isNaN(birthDate)) {
+        yearsDisplay.textContent = "0";
+        monthsDisplay.textContent = "0";
+        daysDisplay.textContent = "0";
+        alert("Please select a valid birthdate!");
+        return;
+      }
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      yearsDisplay.textContent = years;
+      monthsDisplay.textContent = months;
+      daysDisplay.textContent = days;
+    });
+  </script>
+</body>
+</html>
