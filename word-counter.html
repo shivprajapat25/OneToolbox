@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Counter | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: "Poppins", sans-serif;
+      color: #1e293b;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 12px;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      resize: none;
+      outline: none;
+      transition: 0.3s;
+    }
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px 16px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    .danger {
+      background-color: #ef4444;
+    }
+    .danger:hover {
+      background-color: #dc2626;
+    }
+    @media (max-width: 480px) {
+      textarea {
+        height: 150px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Word Counter Tool</p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">🧮 Count Words, Characters, and More</h2>
+    <p class="text-gray-600 text-center mb-6">Type or paste your text below to see instant statistics.</p>
+
+    <textarea id="textInput" placeholder="Start typing or paste your text here..." oninput="updateCounts()"></textarea>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6 text-center">
+      <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+        <h3 class="text-blue-700 font-semibold">Words</h3>
+        <p id="wordCount" class="text-xl font-bold text-gray-800">0</p>
+      </div>
+      <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+        <h3 class="text-blue-700 font-semibold">Characters</h3>
+        <p id="charCount" class="text-xl font-bold text-gray-800">0</p>
+      </div>
+      <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+        <h3 class="text-blue-700 font-semibold">Characters (no spaces)</h3>
+        <p id="charNoSpace" class="text-xl font-bold text-gray-800">0</p>
+      </div>
+      <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+        <h3 class="text-blue-700 font-semibold">Sentences</h3>
+        <p id="sentenceCount" class="text-xl font-bold text-gray-800">0</p>
+      </div>
+      <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+        <h3 class="text-blue-700 font-semibold">Paragraphs</h3>
+        <p id="paragraphCount" class="text-xl font-bold text-gray-800">0</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <button class="danger" onclick="clearText()">Clear</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const textInput = document.getElementById("textInput");
+    const wordCount = document.getElementById("wordCount");
+    const charCount = document.getElementById("charCount");
+    const charNoSpace = document.getElementById("charNoSpace");
+    const sentenceCount = document.getElementById("sentenceCount");
+    const paragraphCount = document.getElementById("paragraphCount");
+
+    function updateCounts() {
+      const text = textInput.value.trim();
+
+      const words = text ? text.split(/\s+/).filter(Boolean) : [];
+      const sentences = text ? text.split(/[.!?]+/).filter(s => s.trim().length > 0) : [];
+      const paragraphs = text ? text.split(/\n+/).filter(p => p.trim().length > 0) : [];
+
+      wordCount.textContent = words.length;
+      charCount.textContent = text.length;
+      charNoSpace.textContent = text.replace(/\s/g, "").length;
+      sentenceCount.textContent = sentences.length;
+      paragraphCount.textContent = paragraphs.length;
+    }
+
+    function clearText() {
+      textInput.value = "";
+      updateCounts();
+    }
+  </script>
+</body>
+</html>
