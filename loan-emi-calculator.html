@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan EMI Calculator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 650px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    input, select {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      transition: 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    .result-box {
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .result-value {
+      font-size: 1.8rem;
+      color: #1e40af;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Loan EMI Calculator</p>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">💰 Loan EMI Calculator</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Enter your loan details below to calculate your monthly EMI, total interest, and total payment.
+    </p>
+
+    <!-- Input Fields -->
+    <div class="flex flex-col gap-4">
+      <div>
+        <label for="loanAmount" class="font-medium text-gray-700">Loan Amount (₹):</label>
+        <input type="number" id="loanAmount" placeholder="Enter loan amount" />
+      </div>
+      <div>
+        <label for="interestRate" class="font-medium text-gray-700">Annual Interest Rate (%):</label>
+        <input type="number" id="interestRate" step="0.01" placeholder="Enter interest rate" />
+      </div>
+      <div>
+        <label for="tenure" class="font-medium text-gray-700">Loan Tenure:</label>
+        <input type="number" id="tenure" placeholder="Enter tenure" />
+      </div>
+      <div>
+        <select id="tenureType" class="text-blue-700 font-medium">
+          <option value="years">Years</option>
+          <option value="months">Months</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-box mt-6">
+      <p class="text-gray-600 mb-2">Monthly EMI:</p>
+      <p id="emiValue" class="result-value">₹0.00</p>
+
+      <div class="mt-4">
+        <p class="text-gray-600">Total Interest Payable:</p>
+        <p id="totalInterest" class="font-semibold text-blue-600">₹0.00</p>
+      </div>
+
+      <div class="mt-2">
+        <p class="text-gray-600">Total Payment (Principal + Interest):</p>
+        <p id="totalPayment" class="font-semibold text-green-600">₹0.00</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const loanAmount = document.getElementById('loanAmount');
+    const interestRate = document.getElementById('interestRate');
+    const tenure = document.getElementById('tenure');
+    const tenureType = document.getElementById('tenureType');
+
+    const emiValue = document.getElementById('emiValue');
+    const totalInterest = document.getElementById('totalInterest');
+    const totalPayment = document.getElementById('totalPayment');
+
+    function formatCurrency(amount) {
+      return '₹' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateEMI() {
+      const principal = parseFloat(loanAmount.value);
+      const annualRate = parseFloat(interestRate.value);
+      const tenureInput = parseFloat(tenure.value);
+      const type = tenureType.value;
+
+      if (!principal || !annualRate || !tenureInput || principal <= 0 || annualRate <= 0 || tenureInput <= 0) {
+        emiValue.textContent = '₹0.00';
+        totalInterest.textContent = '₹0.00';
+        totalPayment.textContent = '₹0.00';
+        return;
+      }
+
+      const monthlyRate = annualRate / 12 / 100;
+      const months = type === 'years' ? tenureInput * 12 : tenureInput;
+
+      const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                  (Math.pow(1 + monthlyRate, months) - 1);
+
+      const totalPay = emi * months;
+      const interest = totalPay - principal;
+
+      emiValue.textContent = formatCurrency(emi);
+      totalInterest.textContent = formatCurrency(interest);
+      totalPayment.textContent = formatCurrency(totalPay);
+    }
+
+    loanAmount.addEventListener('input', calculateEMI);
+    interestRate.addEventListener('input', calculateEMI);
+    tenure.addEventListener('input', calculateEMI);
+    tenureType.addEventListener('change', calculateEMI);
+  </script>
+
+</body>
+</html>
