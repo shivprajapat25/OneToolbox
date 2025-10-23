@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Calculator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    input {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      transition: 0.3s;
+    }
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    select {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+    }
+    .result-box {
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .result-value {
+      font-size: 1.8rem;
+      color: #1e40af;
+      font-weight: 600;
+    }
+    .category {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">BMI Calculator</p>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">⚖️ Body Mass Index (BMI) Calculator</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Enter your weight and height to calculate your BMI and see which category you fall into.
+    </p>
+
+    <!-- Unit Selection -->
+    <div class="flex justify-center mb-6">
+      <select id="unitSystem" class="w-1/2 text-center text-blue-700 font-medium">
+        <option value="metric">Metric (kg, cm)</option>
+        <option value="imperial">Imperial (lbs, in)</option>
+      </select>
+    </div>
+
+    <!-- Input Fields -->
+    <div class="flex flex-col gap-4">
+      <div>
+        <label for="weight" class="font-medium text-gray-700">Weight:</label>
+        <input type="number" id="weight" placeholder="Enter your weight" />
+      </div>
+      <div>
+        <label for="height" class="font-medium text-gray-700">Height:</label>
+        <input type="number" id="height" placeholder="Enter your height" />
+      </div>
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-box mt-6">
+      <p class="text-gray-600 mb-2">Your BMI:</p>
+      <p id="bmiValue" class="result-value">0.00</p>
+      <p id="bmiCategory" class="category text-gray-700">—</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const weightInput = document.getElementById('weight');
+    const heightInput = document.getElementById('height');
+    const bmiValue = document.getElementById('bmiValue');
+    const bmiCategory = document.getElementById('bmiCategory');
+    const unitSystem = document.getElementById('unitSystem');
+
+    function calculateBMI() {
+      const weight = parseFloat(weightInput.value);
+      const height = parseFloat(heightInput.value);
+      const unit = unitSystem.value;
+
+      if (!weight || !height || weight <= 0 || height <= 0) {
+        bmiValue.textContent = '0.00';
+        bmiCategory.textContent = 'Please enter valid values';
+        bmiCategory.className = 'category text-red-600';
+        return;
+      }
+
+      let bmi = 0;
+      if (unit === 'metric') {
+        bmi = weight / ((height / 100) ** 2);
+      } else {
+        bmi = (weight / (height ** 2)) * 703;
+      }
+
+      bmiValue.textContent = bmi.toFixed(2);
+
+      let category = '';
+      let colorClass = 'text-blue-600';
+
+      if (bmi < 18.5) {
+        category = 'Underweight';
+        colorClass = 'text-yellow-500';
+      } else if (bmi < 24.9) {
+        category = 'Normal weight';
+        colorClass = 'text-green-600';
+      } else if (bmi < 29.9) {
+        category = 'Overweight';
+        colorClass = 'text-orange-500';
+      } else {
+        category = 'Obese';
+        colorClass = 'text-red-600';
+      }
+
+      bmiCategory.textContent = category;
+      bmiCategory.className = `category ${colorClass}`;
+    }
+
+    weightInput.addEventListener('input', calculateBMI);
+    heightInput.addEventListener('input', calculateBMI);
+    unitSystem.addEventListener('change', calculateBMI);
+  </script>
+</body>
+</html>
