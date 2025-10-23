@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scientific Calculator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f8ff;
+      color: #1e293b;
+    }
+    .calc-container {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .screen {
+      background: #e0f2fe;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: right;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .btn-blue { background: #3b82f6; color: white; }
+    .btn-gray { background: #e2e8f0; color: #1e293b; }
+    .btn-orange { background: #f59e0b; color: white; }
+    .btn-red { background: #ef4444; color: white; }
+    .btn-green { background: #10b981; color: white; }
+    @media (max-width: 480px) {
+      .screen { font-size: 1.2rem; }
+      button { font-size: 0.9rem; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">Scientific Calculator</p>
+  </header>
+
+  <div class="calc-container">
+    <div id="display" class="screen">0</div>
+
+    <div class="grid grid-cols-5 gap-3">
+      <!-- Scientific -->
+      <button class="btn-gray" onclick="insertFunc('sin(')">sin</button>
+      <button class="btn-gray" onclick="insertFunc('cos(')">cos</button>
+      <button class="btn-gray" onclick="insertFunc('tan(')">tan</button>
+      <button class="btn-gray" onclick="insertFunc('log(')">log</button>
+      <button class="btn-gray" onclick="insertFunc('ln(')">ln</button>
+
+      <button class="btn-gray" onclick="insertFunc('√(')">√</button>
+      <button class="btn-gray" onclick="insertFunc('^2')">x²</button>
+      <button class="btn-gray" onclick="insertFunc('^3')">x³</button>
+      <button class="btn-gray" onclick="insertFunc('^')">xʸ</button>
+      <button class="btn-gray" onclick="insertFunc('π')">π</button>
+
+      <!-- Numbers -->
+      <button class="btn-blue" onclick="insertNum('7')">7</button>
+      <button class="btn-blue" onclick="insertNum('8')">8</button>
+      <button class="btn-blue" onclick="insertNum('9')">9</button>
+      <button class="btn-orange" onclick="insertOp('/')">÷</button>
+      <button class="btn-gray" onclick="insertFunc('e')">e</button>
+
+      <button class="btn-blue" onclick="insertNum('4')">4</button>
+      <button class="btn-blue" onclick="insertNum('5')">5</button>
+      <button class="btn-blue" onclick="insertNum('6')">6</button>
+      <button class="btn-orange" onclick="insertOp('*')">×</button>
+      <button class="btn-gray" onclick="insertFunc('%')">%</button>
+
+      <button class="btn-blue" onclick="insertNum('1')">1</button>
+      <button class="btn-blue" onclick="insertNum('2')">2</button>
+      <button class="btn-blue" onclick="insertNum('3')">3</button>
+      <button class="btn-orange" onclick="insertOp('-')">−</button>
+      <button class="btn-red" onclick="clearDisplay()">C</button>
+
+      <button class="btn-blue" onclick="insertNum('0')">0</button>
+      <button class="btn-blue" onclick="insertNum('.')">.</button>
+      <button class="btn-gray" onclick="insertFunc('(')">(</button>
+      <button class="btn-gray" onclick="insertFunc(')')">)</button>
+      <button class="btn-orange" onclick="insertOp('+')">+</button>
+
+      <button class="col-span-5 btn-green" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <script>
+    const display = document.getElementById('display');
+    let expression = '';
+
+    function insertNum(num) {
+      if (display.textContent === '0') expression = '';
+      expression += num;
+      display.textContent = expression;
+    }
+
+    function insertOp(op) {
+      expression += op;
+      display.textContent = expression;
+    }
+
+    function insertFunc(func) {
+      expression += func;
+      display.textContent = expression;
+    }
+
+    function clearDisplay() {
+      expression = '';
+      display.textContent = '0';
+    }
+
+    function calculate() {
+      try {
+        let exp = expression.replace(/π/g, Math.PI)
+                            .replace(/e/g, Math.E)
+                            .replace(/√\(/g, 'Math.sqrt(')
+                            .replace(/\^/g, '**')
+                            .replace(/sin\(/g, 'Math.sin(')
+                            .replace(/cos\(/g, 'Math.cos(')
+                            .replace(/tan\(/g, 'Math.tan(')
+                            .replace(/log\(/g, 'Math.log10(')
+                            .replace(/ln\(/g, 'Math.log(')
+                            .replace(/%/g, '/100');
+        const result = eval(exp);
+        display.textContent = result.toPrecision(10).replace(/\.?0+$/, '');
+        expression = result.toString();
+      } catch (error) {
+        display.textContent = 'Error';
+        expression = '';
+      }
+    }
+  </script>
+</body>
+</html>
