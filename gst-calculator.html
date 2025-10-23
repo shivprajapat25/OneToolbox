@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GST Calculator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    input, select {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    .result-box {
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .result-value {
+      font-size: 1.5rem;
+      color: #1e40af;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">GST Calculator</p>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">💰 GST Calculator</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Calculate GST amount and total value based on selected rate. Supports both inclusive and exclusive GST.
+    </p>
+
+    <!-- Input Fields -->
+    <div class="flex flex-col gap-4">
+      <div>
+        <label for="amount" class="font-medium text-gray-700">Amount (₹):</label>
+        <input type="number" id="amount" placeholder="Enter amount" />
+      </div>
+
+      <div>
+        <label for="gstRate" class="font-medium text-gray-700">Select GST Rate:</label>
+        <select id="gstRate">
+          <option value="5">5%</option>
+          <option value="12">12%</option>
+          <option value="18" selected>18%</option>
+          <option value="28">28%</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="font-medium text-gray-700">Calculation Type:</label>
+        <div class="flex gap-4 mt-2">
+          <label class="flex items-center gap-2">
+            <input type="radio" name="calcType" value="exclusive" checked />
+            <span>GST Exclusive (Add GST)</span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="radio" name="calcType" value="inclusive" />
+            <span>GST Inclusive (Remove GST)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="result-box mt-6">
+      <p class="text-gray-600 mb-2">GST Amount:</p>
+      <p id="gstAmount" class="result-value">₹0.00</p>
+
+      <p class="text-gray-600 mt-4">Total Amount:</p>
+      <p id="totalAmount" class="result-value text-green-600">₹0.00</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const amountInput = document.getElementById('amount');
+    const gstRateSelect = document.getElementById('gstRate');
+    const calcTypeRadios = document.getElementsByName('calcType');
+    const gstAmountEl = document.getElementById('gstAmount');
+    const totalAmountEl = document.getElementById('totalAmount');
+
+    function formatCurrency(num) {
+      return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateGST() {
+      const amount = parseFloat(amountInput.value);
+      const gstRate = parseFloat(gstRateSelect.value);
+      const calcType = Array.from(calcTypeRadios).find(r => r.checked).value;
+
+      if (!amount || amount <= 0) {
+        gstAmountEl.textContent = '₹0.00';
+        totalAmountEl.textContent = '₹0.00';
+        return;
+      }
+
+      let gstAmount = 0;
+      let totalAmount = 0;
+
+      if (calcType === 'exclusive') {
+        gstAmount = (amount * gstRate) / 100;
+        totalAmount = amount + gstAmount;
+      } else {
+        gstAmount = (amount * gstRate) / (100 + gstRate);
+        totalAmount = amount - gstAmount;
+      }
+
+      gstAmountEl.textContent = formatCurrency(gstAmount);
+      totalAmountEl.textContent = formatCurrency(totalAmount);
+    }
+
+    amountInput.addEventListener('input', calculateGST);
+    gstRateSelect.addEventListener('change', calculateGST);
+    calcTypeRadios.forEach(radio => radio.addEventListener('change', calculateGST));
+  </script>
+</body>
+</html>
