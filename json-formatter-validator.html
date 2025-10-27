@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter & Validator | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: "Poppins", sans-serif;
+      color: #1e293b;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      padding: 12px;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      resize: vertical;
+      outline: none;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px 16px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .secondary {
+      background-color: #10b981;
+    }
+
+    .secondary:hover {
+      background-color: #059669;
+    }
+
+    .danger {
+      background-color: #ef4444;
+    }
+
+    .danger:hover {
+      background-color: #dc2626;
+    }
+
+    .error-box {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">JSON Formatter & Validator</p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">🧾 Format & Validate JSON</h2>
+    <p class="text-gray-600 text-center mb-6">
+      Paste your JSON data below to validate and format it with proper indentation.
+    </p>
+
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Input -->
+      <div>
+        <h3 class="text-lg font-semibold text-blue-600 mb-2">Input JSON:</h3>
+        <textarea id="inputJSON" placeholder='Paste raw JSON here...'></textarea>
+        <div id="errorBox" class="error-box"></div>
+      </div>
+
+      <!-- Output -->
+      <div>
+        <h3 class="text-lg font-semibold text-blue-600 mb-2">Formatted JSON:</h3>
+        <textarea id="outputJSON" readonly placeholder="Formatted JSON will appear here..."></textarea>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mt-6">
+      <button onclick="formatJSON()">Format</button>
+      <button class="secondary" onclick="validateJSON()">Validate</button>
+      <button onclick="copyOutput()">📋 Copy Output</button>
+      <button class="danger" onclick="clearAll()">Clear</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">
+      onetoolbox002@gmail.com
+    </a>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const inputBox = document.getElementById("inputJSON");
+    const outputBox = document.getElementById("outputJSON");
+    const errorBox = document.getElementById("errorBox");
+
+    function formatJSON() {
+      const input = inputBox.value.trim();
+      if (!input) {
+        showError("Please paste JSON data first!");
+        return;
+      }
+
+      try {
+        const formatted = JSON.stringify(JSON.parse(input), null, 2);
+        outputBox.value = formatted;
+        hideError();
+      } catch (error) {
+        showError("Invalid JSON format! " + error.message);
+      }
+    }
+
+    function validateJSON() {
+      const input = inputBox.value.trim();
+      if (!input) {
+        showError("Please paste JSON data first!");
+        return;
+      }
+
+      try {
+        JSON.parse(input);
+        hideError();
+        alert("✅ JSON is valid!");
+      } catch (error) {
+        showError("❌ Invalid JSON: " + error.message);
+      }
+    }
+
+    function copyOutput() {
+      if (!outputBox.value.trim()) {
+        alert("No output to copy!");
+        return;
+      }
+      outputBox.select();
+      document.execCommand("copy");
+      alert("Formatted JSON copied to clipboard!");
+    }
+
+    function clearAll() {
+      inputBox.value = "";
+      outputBox.value = "";
+      hideError();
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    function hideError() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+  </script>
+</body>
+</html>
