@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Minifier | One Tool box</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: "Poppins", sans-serif;
+      color: #1e293b;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      padding: 12px;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      resize: vertical;
+      outline: none;
+      transition: 0.3s;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px 16px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .secondary {
+      background-color: #10b981;
+    }
+
+    .secondary:hover {
+      background-color: #059669;
+    }
+
+    .danger {
+      background-color: #ef4444;
+    }
+
+    .danger:hover {
+      background-color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-semibold text-blue-600">One Tool box</h1>
+    <p class="text-gray-600 text-sm mt-1">HTML Minifier Tool</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-semibold text-center text-blue-600 mb-4">🧹 Minify Your HTML Code</h2>
+    <p class="text-gray-600 text-center mb-6">Paste your HTML code below to remove extra spaces, comments, and line breaks.</p>
+
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Input Area -->
+      <div>
+        <h3 class="text-lg font-semibold text-blue-600 mb-2">Original HTML:</h3>
+        <textarea id="inputCode" placeholder="Paste your HTML code here..."></textarea>
+      </div>
+
+      <!-- Output Area -->
+      <div>
+        <h3 class="text-lg font-semibold text-blue-600 mb-2">Minified HTML:</h3>
+        <textarea id="outputCode" readonly placeholder="Minified code will appear here..."></textarea>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mt-6">
+      <button onclick="minifyHTML()">Minify</button>
+      <button class="secondary" onclick="copyOutput()">📋 Copy Output</button>
+      <button class="danger" onclick="clearAll()">Clear</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-10 mb-4">
+    Contact:
+    <a href="mailto:onetoolbox002@gmail.com" class="underline text-blue-600">onetoolbox002@gmail.com</a>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    function minifyHTML() {
+      const input = document.getElementById("inputCode").value;
+      const output = document.getElementById("outputCode");
+
+      if (!input.trim()) {
+        alert("Please paste your HTML code first!");
+        return;
+      }
+
+      let minified = input
+        .replace(/<!--[\s\S]*?-->/g, "") // Remove comments
+        .replace(/\n\s*/g, "") // Remove line breaks + extra spaces
+        .replace(/\s{2,}/g, " ") // Collapse multiple spaces
+        .replace(/>\s+</g, "><") // Remove spaces between tags
+        .trim();
+
+      output.value = minified;
+    }
+
+    function clearAll() {
+      document.getElementById("inputCode").value = "";
+      document.getElementById("outputCode").value = "";
+    }
+
+    function copyOutput() {
+      const output = document.getElementById("outputCode");
+      if (!output.value.trim()) {
+        alert("No output to copy!");
+        return;
+      }
+      output.select();
+      document.execCommand("copy");
+      alert("Minified code copied to clipboard!");
+    }
+  </script>
+</body>
+</html>
