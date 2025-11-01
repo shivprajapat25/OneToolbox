@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Picker from Image | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .upload-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    label.upload-btn {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    label.upload-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    canvas {
+      display: block;
+      max-width: 100%;
+      margin: 20px auto;
+      border: 2px dashed #93c5fd;
+      border-radius: 12px;
+      cursor: crosshair;
+    }
+
+    .color-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .color-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      border: 2px solid #cbd5e1;
+    }
+
+    .color-codes {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code {
+      background: #f1f5f9;
+      padding: 8px 15px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+      font-weight: 500;
+      border: 1px solid #bfdbfe;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+      font-weight: 500;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🎨 Color Picker from Image</header>
+
+  <div class="container">
+    <h2>Pick a Color from Your Image</h2>
+    <p>Upload an image and click anywhere on it to get the color in HEX, RGB, and HSL formats.</p>
+
+    <div class="upload-box">
+      <label for="imageUpload" class="upload-btn">Upload Image</label>
+      <input type="file" id="imageUpload" accept="image/*">
+    </div>
+
+    <canvas id="imageCanvas"></canvas>
+
+    <div class="color-info" id="colorInfo" style="display:none;">
+      <div class="color-preview" id="colorPreview"></div>
+      <div class="color-codes">
+        <div class="code" id="hexCode">HEX: #</div>
+        <div class="code" id="rgbCode">RGB: </div>
+        <div class="code" id="hslCode">HSL: </div>
+      </div>
+      <div class="buttons">
+        <button onclick="copyCodes()">Copy Codes</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplifying your digital life</footer>
+
+  <script>
+    const imageUpload = document.getElementById("imageUpload");
+    const canvas = document.getElementById("imageCanvas");
+    const ctx = canvas.getContext("2d");
+    const colorInfo = document.getElementById("colorInfo");
+    const colorPreview = document.getElementById("colorPreview");
+    const hexCode = document.getElementById("hexCode");
+    const rgbCode = document.getElementById("rgbCode");
+    const hslCode = document.getElementById("hslCode");
+
+    let img = new Image();
+
+    imageUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        img.onload = function() {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+      colorInfo.style.display = "none";
+    });
+
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const [r, g, b] = pixel;
+      const hex = rgbToHex(r, g, b);
+      const hsl = rgbToHsl(r, g, b);
+
+      colorPreview.style.background = hex;
+      hexCode.innerText = `HEX: ${hex}`;
+      rgbCode.innerText = `RGB: rgb(${r}, ${g}, ${b})`;
+      hslCode.innerText = `HSL: ${hsl}`;
+      colorInfo.style.display = "flex";
+    });
+
+    function rgbToHex(r, g, b) {
+      return (
+        "#" +
+        [r, g, b]
+          .map((x) => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+          })
+          .join("")
+      ).toUpperCase();
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255;
+      g /= 255;
+      b /= 255;
+      const max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
+      let h,
+        s,
+        l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r:
+            h = (g - b) / d + (g < b ? 6 : 0);
+            break;
+          case g:
+            h = (b - r) / d + 2;
+            break;
+          case b:
+            h = (r - g) / d + 4;
+            break;
+        }
+        h /= 6;
+      }
+      return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+    }
+
+    function copyCodes() {
+      const text = `${hexCode.innerText}\n${rgbCode.innerText}\n${hslCode.innerText}`;
+      navigator.clipboard.writeText(text);
+      alert("Color codes copied to clipboard!");
+    }
+
+    function clearAll() {
+      canvas.width = 0;
+      canvas.height = 0;
+      imageUpload.value = "";
+      colorInfo.style.display = "none";
+    }
+  </script>
+</body>
+</html>
