@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palette Generator | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      color: #1e3a8a;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    input[type="color"],
+    input[type="number"],
+    select {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #93c5fd;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .palette {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .color-card {
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      position: relative;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 5px;
+      font-size: 0.9rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .color-card:hover {
+      transform: scale(1.05);
+    }
+
+    .saved-message {
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .color-card {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🎨 Palette Generator</header>
+
+  <div class="container">
+    <h2>Generate Beautiful Color Palettes</h2>
+    <p>Enter a base color and create complementary, analogous, triadic, or monochromatic palettes.</p>
+
+    <div class="controls">
+      <input type="color" id="baseColor" value="#2563eb" />
+      <select id="paletteType">
+        <option value="complementary">Complementary</option>
+        <option value="analogous">Analogous</option>
+        <option value="triadic">Triadic</option>
+        <option value="monochromatic">Monochromatic</option>
+      </select>
+      <input type="number" id="paletteSize" min="3" max="8" value="5" />
+      <button onclick="generatePalette()">Generate Palette</button>
+      <button onclick="savePalette()">Save Palette</button>
+    </div>
+
+    <div class="palette" id="paletteDisplay"></div>
+    <p class="saved-message" id="savedMessage">✅ Palette saved successfully!</p>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplify your digital life</footer>
+
+  <script>
+    const paletteDisplay = document.getElementById('paletteDisplay');
+    const savedMessage = document.getElementById('savedMessage');
+
+    function hexToHSL(hex) {
+      hex = hex.replace('#', '');
+      let r = parseInt(hex.substring(0, 2), 16) / 255;
+      let g = parseInt(hex.substring(2, 4), 16) / 255;
+      let b = parseInt(hex.substring(4, 6), 16) / 255;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h *= 60;
+      }
+      return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
+    }
+
+    function hslToHex(h, s, l) {
+      s /= 100;
+      l /= 100;
+      const c = (1 - Math.abs(2 * l - 1)) * s;
+      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const m = l - c / 2;
+      let r = 0, g = 0, b = 0;
+      if (h < 60) [r, g, b] = [c, x, 0];
+      else if (h < 120) [r, g, b] = [x, c, 0];
+      else if (h < 180) [r, g, b] = [0, c, x];
+      else if (h < 240) [r, g, b] = [0, x, c];
+      else if (h < 300) [r, g, b] = [x, 0, c];
+      else [r, g, b] = [c, 0, x];
+      r = Math.round((r + m) * 255);
+      g = Math.round((g + m) * 255);
+      b = Math.round((b + m) * 255);
+      return `#${((1 << 24) + (r << 16) + (g << 8) + b)
+        .toString(16)
+        .slice(1)
+        .toUpperCase()}`;
+    }
+
+    function generatePalette() {
+      const baseColor = document.getElementById('baseColor').value;
+      const paletteType = document.getElementById('paletteType').value;
+      const paletteSize = parseInt(document.getElementById('paletteSize').value);
+      const [h, s, l] = hexToHSL(baseColor);
+      const colors = [];
+
+      if (paletteType === 'complementary') {
+        colors.push(hslToHex(h, s, l), hslToHex((h + 180) % 360, s, l));
+      } else if (paletteType === 'analogous') {
+        for (let i = -2; i <= 2; i++) {
+          colors.push(hslToHex((h + i * 30 + 360) % 360, s, l));
+        }
+      } else if (paletteType === 'triadic') {
+        colors.push(
+          hslToHex(h, s, l),
+          hslToHex((h + 120) % 360, s, l),
+          hslToHex((h + 240) % 360, s, l)
+        );
+      } else if (paletteType === 'monochromatic') {
+        for (let i = 0; i < paletteSize; i++) {
+          colors.push(hslToHex(h, s, Math.min(100, l + i * 10 - 20)));
+        }
+      }
+
+      paletteDisplay.innerHTML = '';
+      colors.slice(0, paletteSize).forEach(color => {
+        const div = document.createElement('div');
+        div.className = 'color-card';
+        div.style.background = color;
+        div.innerHTML = `<span>${color}</span>`;
+        div.onclick = () => {
+          navigator.clipboard.writeText(color);
+          alert(`✅ Copied ${color}`);
+        };
+        paletteDisplay.appendChild(div);
+      });
+    }
+
+    function savePalette() {
+      savedMessage.style.display = 'block';
+      setTimeout(() => (savedMessage.style.display = 'none'), 2000);
+    }
+  </script>
+</body>
+</html>
