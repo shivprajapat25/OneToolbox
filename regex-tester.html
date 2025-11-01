@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Tester | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f9fcff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      padding: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 25px;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #bfdbfe;
+      outline: none;
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    textarea:focus, input:focus {
+      border-color: #2563eb;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+      font-weight: 500;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .result-box {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      min-height: 100px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .highlight {
+      background: #93c5fd;
+      color: #0f172a;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+
+    .error {
+      color: #dc2626;
+      background: #fee2e2;
+      padding: 8px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🔍 Regex Tester</header>
+
+  <div class="container">
+    <h2>Test Your Regular Expressions</h2>
+    <p>Enter your regex pattern and test text below. Matches will be highlighted in real-time.</p>
+
+    <label for="regexInput"><strong>Regular Expression:</strong></label>
+    <input type="text" id="regexInput" placeholder="e.g. \b[a-zA-Z]+\b" />
+
+    <label for="testText" style="margin-top:15px; display:block;"><strong>Test Text:</strong></label>
+    <textarea id="testText" rows="6" placeholder="Enter your sample text here..."></textarea>
+
+    <div class="buttons">
+      <button onclick="testRegex()">Test</button>
+      <button onclick="clearAll()">Clear</button>
+      <button onclick="copyOutput()">Copy Output</button>
+    </div>
+
+    <div id="errorBox" class="error" style="display: none;"></div>
+    <div id="resultBox" class="result-box"></div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplifying your digital life</footer>
+
+  <script>
+    function testRegex() {
+      const regexInput = document.getElementById("regexInput").value;
+      const testText = document.getElementById("testText").value;
+      const resultBox = document.getElementById("resultBox");
+      const errorBox = document.getElementById("errorBox");
+
+      resultBox.innerHTML = "";
+      errorBox.style.display = "none";
+
+      if (!regexInput.trim() || !testText.trim()) {
+        errorBox.style.display = "block";
+        errorBox.innerText = "Please enter both a regular expression and sample text.";
+        return;
+      }
+
+      try {
+        const regex = new RegExp(regexInput, "g");
+        let match;
+        let result = "";
+        let lastIndex = 0;
+
+        while ((match = regex.exec(testText)) !== null) {
+          result += testText.substring(lastIndex, match.index);
+          result += `<span class="highlight">${match[0]}</span>`;
+          lastIndex = regex.lastIndex;
+        }
+
+        result += testText.substring(lastIndex);
+        resultBox.innerHTML = result || testText;
+
+        if (regexInput && !result.includes("highlight")) {
+          errorBox.style.display = "block";
+          errorBox.innerText = "No matches found.";
+        }
+
+      } catch (e) {
+        errorBox.style.display = "block";
+        errorBox.innerText = "Invalid regular expression: " + e.message;
+      }
+    }
+
+    function clearAll() {
+      document.getElementById("regexInput").value = "";
+      document.getElementById("testText").value = "";
+      document.getElementById("resultBox").innerHTML = "";
+      document.getElementById("errorBox").style.display = "none";
+    }
+
+    function copyOutput() {
+      const text = document.getElementById("resultBox").innerText;
+      if (!text.trim()) {
+        alert("No output to copy!");
+        return;
+      }
+      navigator.clipboard.writeText(text);
+      alert("Output copied to clipboard!");
+    }
+  </script>
+</body>
+</html>
