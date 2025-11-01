@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contrast Checker | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      color: #1e3a8a;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .color-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .color-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="color"],
+    input[type="text"] {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #93c5fd;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 120px;
+    }
+
+    .preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .color-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      border: 2px solid #cbd5e1;
+    }
+
+    .result-box {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 1px solid #cbd5e1;
+      font-family: monospace;
+      color: #1e3a8a;
+    }
+
+    .status {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 5px;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .color-inputs {
+        flex-direction: column;
+      }
+      .preview {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🎨 Contrast Checker</header>
+
+  <div class="container">
+    <h2>Check WCAG Color Contrast</h2>
+    <p>Compare two colors and see if they meet accessibility standards.</p>
+
+    <div class="color-inputs">
+      <div class="color-box">
+        <label>Foreground:</label>
+        <input type="color" id="color1" value="#1e3a8a" />
+        <input type="text" id="color1Text" value="#1e3a8a" />
+      </div>
+      <div class="color-box">
+        <label>Background:</label>
+        <input type="color" id="color2" value="#ffffff" />
+        <input type="text" id="color2Text" value="#ffffff" />
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button onclick="checkContrast()">Check Contrast</button>
+      <button onclick="copyContrast()">Copy Ratio</button>
+      <button onclick="resetChecker()">Reset</button>
+    </div>
+
+    <div class="preview">
+      <div class="color-preview" id="preview1"></div>
+      <div class="color-preview" id="preview2"></div>
+    </div>
+
+    <div class="result-box" id="result">Contrast Ratio: --</div>
+    <div class="status" id="status">Result: --</div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplifying your digital life</footer>
+
+  <script>
+    const color1 = document.getElementById("color1");
+    const color2 = document.getElementById("color2");
+    const color1Text = document.getElementById("color1Text");
+    const color2Text = document.getElementById("color2Text");
+    const preview1 = document.getElementById("preview1");
+    const preview2 = document.getElementById("preview2");
+    const result = document.getElementById("result");
+    const status = document.getElementById("status");
+
+    function hexToRgb(hex) {
+      hex = hex.replace("#", "");
+      if (hex.length === 3) {
+        hex = hex.split("").map(c => c + c).join("");
+      }
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return [r, g, b];
+    }
+
+    function luminance(r, g, b) {
+      const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928
+          ? v / 12.92
+          : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function contrast(rgb1, rgb2) {
+      const lum1 = luminance(...rgb1);
+      const lum2 = luminance(...rgb2);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return ((brightest + 0.05) / (darkest + 0.05)).toFixed(2);
+    }
+
+    function checkContrast() {
+      const c1 = color1Text.value.trim();
+      const c2 = color2Text.value.trim();
+      const rgb1 = hexToRgb(c1);
+      const rgb2 = hexToRgb(c2);
+
+      const ratio = contrast(rgb1, rgb2);
+      result.textContent = `Contrast Ratio: ${ratio}:1`;
+
+      let passLevel = "";
+      let color = "";
+
+      if (ratio >= 7) {
+        passLevel = "✅ Passes WCAG AAA";
+        color = "green";
+      } else if (ratio >= 4.5) {
+        passLevel = "✅ Passes WCAG AA";
+        color = "orange";
+      } else {
+        passLevel = "❌ Fails WCAG";
+        color = "red";
+      }
+
+      status.textContent = passLevel;
+      status.style.color = color;
+
+      preview1.style.background = c1;
+      preview2.style.background = c2;
+    }
+
+    function copyContrast() {
+      navigator.clipboard.writeText(result.textContent);
+      alert("✅ Contrast ratio copied!");
+    }
+
+    function resetChecker() {
+      color1.value = "#1e3a8a";
+      color2.value = "#ffffff";
+      color1Text.value = "#1e3a8a";
+      color2Text.value = "#ffffff";
+      preview1.style.background = "#1e3a8a";
+      preview2.style.background = "#ffffff";
+      result.textContent = "Contrast Ratio: --";
+      status.textContent = "Result: --";
+      status.style.color = "#1e3a8a";
+    }
+
+    // Sync color pickers with text inputs
+    color1.addEventListener("input", () => (color1Text.value = color1.value));
+    color2.addEventListener("input", () => (color2Text.value = color2.value));
+    color1Text.addEventListener("input", () => (color1.value = color1Text.value));
+    color2Text.addEventListener("input", () => (color2.value = color2Text.value));
+
+    // Initialize previews
+    preview1.style.background = color1.value;
+    preview2.style.background = color2.value;
+  </script>
+</body>
+</html>
