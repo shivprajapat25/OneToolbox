@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Zone Converter | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1d4ed8;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:focus, input:focus {
+      border-color: #2563eb;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .result {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #1e3a8a;
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>🕒 Time Zone Converter</header>
+
+  <div class="container">
+    <h2>Convert Time Between Time Zones</h2>
+
+    <label for="fromTimeZone">From Time Zone:</label>
+    <select id="fromTimeZone"></select>
+
+    <label for="toTimeZone">To Time Zone:</label>
+    <select id="toTimeZone"></select>
+
+    <label for="inputTime">Select Time:</label>
+    <input type="datetime-local" id="inputTime">
+
+    <div class="buttons">
+      <button onclick="convertTime()">Convert</button>
+      <button onclick="clearFields()">Clear</button>
+    </div>
+
+    <div class="result" id="resultBox">Converted time will appear here...</div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplifying your digital life</footer>
+
+  <script>
+    const timeZones = Intl.supportedValuesOf('timeZone');
+    const fromSelect = document.getElementById('fromTimeZone');
+    const toSelect = document.getElementById('toTimeZone');
+    const inputTime = document.getElementById('inputTime');
+    const resultBox = document.getElementById('resultBox');
+
+    // Populate dropdowns with time zones
+    function populateTimeZones() {
+      timeZones.forEach(zone => {
+        const option1 = document.createElement('option');
+        option1.value = zone;
+        option1.textContent = zone;
+
+        const option2 = document.createElement('option');
+        option2.value = zone;
+        option2.textContent = zone;
+
+        fromSelect.appendChild(option1);
+        toSelect.appendChild(option2);
+      });
+
+      fromSelect.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      toSelect.value = "UTC";
+    }
+
+    // Convert function
+    function convertTime() {
+      const fromTZ = fromSelect.value;
+      const toTZ = toSelect.value;
+      const timeInput = inputTime.value;
+
+      if (!timeInput) {
+        resultBox.textContent = "Please select a time to convert.";
+        return;
+      }
+
+      try {
+        const localTime = new Date(timeInput);
+        const converted = new Intl.DateTimeFormat('en-US', {
+          timeZone: toTZ,
+          hour12: false,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).format(localTime);
+
+        resultBox.innerHTML = `
+          <strong>${fromTZ}</strong> ➡ <strong>${toTZ}</strong><br>
+          <span style="font-size:1.2rem;color:#1d4ed8;">${converted}</span>
+        `;
+      } catch (e) {
+        resultBox.textContent = "Error converting time. Please try again.";
+      }
+    }
+
+    // Clear function
+    function clearFields() {
+      inputTime.value = "";
+      resultBox.textContent = "Converted time will appear here...";
+    }
+
+    populateTimeZones();
+  </script>
+</body>
+</html>
