@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base64 Encoder / Decoder</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #e0f2ff, #ffffff);
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      width: 95%;
+      max-width: 600px;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2563eb;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      border: 2px solid #93c5fd;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1rem;
+      resize: none;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    button {
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px 18px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    /* Encode Button (Bright Blue Gradient) */
+    .encode-btn {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+    }
+    .encode-btn:hover {
+      background: linear-gradient(90deg, #2563eb, #1e40af);
+      transform: scale(1.05);
+    }
+
+    /* Decode Button (Teal Gradient) */
+    .decode-btn {
+      background: linear-gradient(90deg, #0ea5e9, #0284c7);
+    }
+    .decode-btn:hover {
+      background: linear-gradient(90deg, #0284c7, #0369a1);
+      transform: scale(1.05);
+    }
+
+    /* Copy Button (Green) */
+    .copy-btn {
+      background: #10b981;
+    }
+    .copy-btn:hover {
+      background: #059669;
+      transform: scale(1.05);
+    }
+
+    /* Clear Button (Red) */
+    .clear-btn {
+      background: #ef4444;
+    }
+    .clear-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .output {
+      background: #f0f9ff;
+      border: 2px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 120px;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      color: #1e3a8a;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      textarea,
+      .output {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Base64 Encoder / Decoder</h1>
+    <textarea id="inputText" placeholder="Enter your text or Base64 string here..."></textarea>
+
+    <div class="buttons">
+      <button class="encode-btn" onclick="encodeBase64()">Encode</button>
+      <button class="decode-btn" onclick="decodeBase64()">Decode</button>
+      <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+      <button class="clear-btn" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="output" id="outputBox">Output will appear here...</div>
+  </div>
+
+  <script>
+    const inputText = document.getElementById("inputText");
+    const outputBox = document.getElementById("outputBox");
+
+    // Encode function
+    function encodeBase64() {
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(inputText.value)));
+        outputBox.textContent = encoded || "No input provided.";
+      } catch (e) {
+        outputBox.textContent = "⚠️ Invalid input for encoding.";
+      }
+    }
+
+    // Decode function
+    function decodeBase64() {
+      try {
+        const decoded = decodeURIComponent(escape(atob(inputText.value)));
+        outputBox.textContent = decoded || "No input provided.";
+      } catch (e) {
+        outputBox.textContent = "⚠️ Invalid Base64 string.";
+      }
+    }
+
+    // Copy function
+    function copyOutput() {
+      const text = outputBox.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Output copied to clipboard!");
+      });
+    }
+
+    // Clear all
+    function clearAll() {
+      inputText.value = "";
+      outputBox.textContent = "Output will appear here...";
+    }
+  </script>
+</body>
+</html>
