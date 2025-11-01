@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Converter | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1d4ed8;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:focus, input:focus {
+      border-color: #2563eb;
+    }
+
+    .result {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #1e3a8a;
+      margin-top: 15px;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>📏 Unit Converter Tool</header>
+
+  <div class="container">
+    <h2>Convert Between Units Instantly</h2>
+
+    <label for="category">Select Category:</label>
+    <select id="category" onchange="populateUnits()">
+      <option value="length">Length</option>
+      <option value="weight">Weight</option>
+      <option value="temperature">Temperature</option>
+      <option value="volume">Volume</option>
+      <option value="area">Area</option>
+    </select>
+
+    <label for="inputValue">Enter Value:</label>
+    <input type="number" id="inputValue" placeholder="Enter value" oninput="convertUnits()">
+
+    <label for="fromUnit">From:</label>
+    <select id="fromUnit" onchange="convertUnits()"></select>
+
+    <label for="toUnit">To:</label>
+    <select id="toUnit" onchange="convertUnits()"></select>
+
+    <div class="result" id="resultBox">Converted value will appear here...</div>
+
+    <div class="buttons">
+      <button onclick="convertUnits()">Convert</button>
+      <button onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplify your digital life</footer>
+
+  <script>
+    const units = {
+      length: {
+        Meter: 1,
+        Kilometer: 1000,
+        Centimeter: 0.01,
+        Millimeter: 0.001,
+        Mile: 1609.34,
+        Yard: 0.9144,
+        Foot: 0.3048,
+        Inch: 0.0254
+      },
+      weight: {
+        Kilogram: 1,
+        Gram: 0.001,
+        Milligram: 0.000001,
+        Pound: 0.453592,
+        Ounce: 0.0283495
+      },
+      temperature: {
+        Celsius: 'C',
+        Fahrenheit: 'F',
+        Kelvin: 'K'
+      },
+      volume: {
+        Liter: 1,
+        Milliliter: 0.001,
+        Gallon: 3.78541,
+        Pint: 0.473176,
+        Cup: 0.24
+      },
+      area: {
+        'Square Meter': 1,
+        'Square Kilometer': 1e6,
+        'Square Centimeter': 0.0001,
+        'Square Mile': 2.59e6,
+        'Square Yard': 0.836127,
+        'Square Foot': 0.092903,
+        'Square Inch': 0.00064516,
+        Acre: 4046.86,
+        Hectare: 10000
+      }
+    };
+
+    const categoryEl = document.getElementById('category');
+    const fromEl = document.getElementById('fromUnit');
+    const toEl = document.getElementById('toUnit');
+    const inputEl = document.getElementById('inputValue');
+    const resultBox = document.getElementById('resultBox');
+
+    function populateUnits() {
+      const category = categoryEl.value;
+      const unitList = units[category];
+      fromEl.innerHTML = '';
+      toEl.innerHTML = '';
+      for (let unit in unitList) {
+        fromEl.innerHTML += `<option value="${unit}">${unit}</option>`;
+        toEl.innerHTML += `<option value="${unit}">${unit}</option>`;
+      }
+      convertUnits();
+    }
+
+    function convertUnits() {
+      const category = categoryEl.value;
+      const value = parseFloat(inputEl.value);
+      const from = fromEl.value;
+      const to = toEl.value;
+
+      if (isNaN(value)) {
+        resultBox.textContent = 'Please enter a valid number.';
+        return;
+      }
+
+      let result;
+
+      if (category === 'temperature') {
+        result = convertTemperature(value, from, to);
+      } else {
+        const factor = units[category];
+        result = (value * factor[from]) / factor[to];
+      }
+
+      resultBox.textContent = `${value} ${from} = ${result.toFixed(4)} ${to}`;
+    }
+
+    function convertTemperature(value, from, to) {
+      let celsius;
+      if (from === 'Celsius') celsius = value;
+      else if (from === 'Fahrenheit') celsius = (value - 32) * 5 / 9;
+      else if (from === 'Kelvin') celsius = value - 273.15;
+
+      let result;
+      if (to === 'Celsius') result = celsius;
+      else if (to === 'Fahrenheit') result = (celsius * 9 / 5) + 32;
+      else if (to === 'Kelvin') result = celsius + 273.15;
+
+      return result;
+    }
+
+    function clearAll() {
+      inputEl.value = '';
+      resultBox.textContent = 'Converted value will appear here...';
+    }
+
+    populateUnits();
+  </script>
+</body>
+</html>
