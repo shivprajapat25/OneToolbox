@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta Tag Analyzer | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+      color: #1e3a8a;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 10px 5px;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+    }
+
+    .meta-item {
+      margin-bottom: 20px;
+    }
+
+    .meta-item h3 {
+      margin: 0;
+      color: #1d4ed8;
+    }
+
+    .meta-item p {
+      margin: 5px 0;
+      color: #334155;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+    .good {
+      color: #16a34a;
+    }
+
+    .bad {
+      color: #dc2626;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-family: monospace;
+      padding: 10px;
+      border: 1px solid #93c5fd;
+      border-radius: 10px;
+      resize: vertical;
+      background-color: #f8fafc;
+      color: #1e3a8a;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🔍 Meta Tag Analyzer</header>
+
+  <div class="container">
+    <h2>Analyze Website Meta Tags</h2>
+    <p>Enter a webpage URL to fetch and analyze its SEO meta tags.</p>
+
+    <input type="text" id="urlInput" placeholder="Enter website URL (e.g. https://example.com)" />
+    
+    <div class="buttons">
+      <button onclick="analyzeMetaTags()">Analyze</button>
+      <button onclick="clearResults()">Clear</button>
+    </div>
+
+    <div id="results" class="results"></div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplify your digital life</footer>
+
+  <script>
+    async function analyzeMetaTags() {
+      const url = document.getElementById("urlInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (!url) {
+        alert("Please enter a valid URL!");
+        return;
+      }
+
+      resultsDiv.innerHTML = "<p style='text-align:center;color:#2563eb;'>Fetching meta data...</p>";
+
+      try {
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+        const html = data.contents;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        const title = doc.querySelector("title")?.innerText || "Not found";
+        const description = doc.querySelector("meta[name='description']")?.content || "Not found";
+        const keywords = doc.querySelector("meta[name='keywords']")?.content || "Not found";
+        const metaTags = Array.from(doc.querySelectorAll("meta")).map(m => m.outerHTML);
+
+        let htmlOutput = `
+          <div class="meta-item">
+            <h3>Title Tag</h3>
+            <p><strong>Content:</strong> ${title}</p>
+            <p><strong>Length:</strong> ${title.length} characters</p>
+            <p class="status ${title.length >= 50 && title.length <= 60 ? 'good' : 'bad'}">
+              ${title.length >= 50 && title.length <= 60 ? '✅ Optimal Length' : '⚠️ Should be 50–60 characters'}
+            </p>
+          </div>
+
+          <div class="meta-item">
+            <h3>Description Tag</h3>
+            <p><strong>Content:</strong> ${description}</p>
+            <p><strong>Length:</strong> ${description.length} characters</p>
+            <p class="status ${description.length >= 150 && description.length <= 160 ? 'good' : 'bad'}">
+              ${description.length >= 150 && description.length <= 160 ? '✅ Optimal Length' : '⚠️ Should be 150–160 characters'}
+            </p>
+          </div>
+
+          <div class="meta-item">
+            <h3>Keywords Tag</h3>
+            <p><strong>Content:</strong> ${keywords}</p>
+            <p><strong>Keyword Count:</strong> ${keywords !== "Not found" ? keywords.split(',').length : 0}</p>
+          </div>
+
+          <div class="meta-item">
+            <h3>All Meta Tags (HTML Source)</h3>
+            <textarea readonly>${metaTags.join("\n")}</textarea>
+          </div>
+        `;
+
+        resultsDiv.innerHTML = htmlOutput;
+
+      } catch (error) {
+        console.error(error);
+        resultsDiv.innerHTML = "<p style='color:red;text-align:center;'>❌ Failed to fetch meta tags. Check the URL or CORS policy.</p>";
+      }
+    }
+
+    function clearResults() {
+      document.getElementById("urlInput").value = "";
+      document.getElementById("results").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
