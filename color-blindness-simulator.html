@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Blindness Simulator | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .upload-section {
+      margin-bottom: 25px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #93c5fd;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .preview {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .image-card {
+      text-align: center;
+      width: 250px;
+    }
+
+    .image-card img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .image-card h4 {
+      margin-top: 10px;
+      color: #1e3a8a;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .image-card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>👁️ Color Blindness Simulator</header>
+
+  <div class="container">
+    <h2>See Your Image Through Different Eyes</h2>
+    <p>Upload an image to simulate how it appears to people with different types of color blindness.</p>
+
+    <div class="upload-section">
+      <input type="file" id="imageUpload" accept="image/*" />
+      <br>
+      <button onclick="simulate()">Simulate</button>
+      <button onclick="resetSimulator()">Reset</button>
+    </div>
+
+    <div class="preview" id="previewArea"></div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplify your digital life</footer>
+
+  <script>
+    const previewArea = document.getElementById('previewArea');
+    let originalImage = null;
+
+    function resetSimulator() {
+      previewArea.innerHTML = '';
+      document.getElementById('imageUpload').value = '';
+      originalImage = null;
+    }
+
+    function simulate() {
+      const fileInput = document.getElementById('imageUpload');
+      if (!fileInput.files.length) {
+        alert('Please upload an image first!');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          previewArea.innerHTML = '';
+          originalImage = e.target.result;
+          createSimulations(img);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function createSimulations(img) {
+      const types = [
+        { name: 'Original', filter: 'none' },
+        { name: 'Deuteranopia', filter: 'url(#deuteranopia)' },
+        { name: 'Protanopia', filter: 'url(#protanopia)' },
+        { name: 'Tritanopia', filter: 'url(#tritanopia)' },
+      ];
+
+      // Create SVG filters dynamically
+      const svgFilters = `
+        <svg width="0" height="0">
+          <filter id="deuteranopia">
+            <feColorMatrix type="matrix" values="0.625,0.7,0,0,0, 0.7,0.625,0,0,0, 0,0.3,0.625,0,0, 0,0,0,1,0"/>
+          </filter>
+          <filter id="protanopia">
+            <feColorMatrix type="matrix" values="0.567,0.433,0,0,0, 0.558,0.442,0,0,0, 0,0.242,0.758,0,0, 0,0,0,1,0"/>
+          </filter>
+          <filter id="tritanopia">
+            <feColorMatrix type="matrix" values="0.95,0.05,0,0,0, 0,0.433,0.567,0,0, 0,0.475,0.525,0,0, 0,0,0,1,0"/>
+          </filter>
+        </svg>
+      `;
+      document.body.insertAdjacentHTML('beforeend', svgFilters);
+
+      types.forEach(({ name, filter }) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx.filter = filter === 'none' ? 'none' : 'url(' + filter + ')';
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        const card = document.createElement('div');
+        card.className = 'image-card';
+        const simulatedImage = new Image();
+        simulatedImage.src = canvas.toDataURL();
+
+        card.appendChild(simulatedImage);
+        const caption = document.createElement('h4');
+        caption.innerText = name;
+        card.appendChild(caption);
+
+        previewArea.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
