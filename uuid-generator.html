@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UUID Generator | One Tool Box</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f0f8ff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #1d4ed8;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #475569;
+      margin-bottom: 25px;
+    }
+
+    .uuid-box {
+      background: #f0f8ff;
+      border: 1px solid #93c5fd;
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 1.2rem;
+      color: #1e3a8a;
+      word-break: break-all;
+      margin-bottom: 20px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #64748b;
+      font-size: 0.9rem;
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .uuid-box {
+        font-size: 1rem;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🔑 UUID Generator Tool</header>
+
+  <div class="container">
+    <h2>Generate a Unique UUID Instantly</h2>
+    <p>Click the button below to generate a random, universally unique identifier (UUID v4).</p>
+
+    <div class="uuid-box" id="uuidDisplay">Your UUID will appear here...</div>
+
+    <div class="buttons">
+      <button onclick="generateUUID()">Generate</button>
+      <button onclick="copyUUID()">Copy</button>
+      <button onclick="clearUUID()">Clear</button>
+    </div>
+  </div>
+
+  <footer>© 2025 One Tool Box | Simplify your digital life</footer>
+
+  <script>
+    const uuidDisplay = document.getElementById('uuidDisplay');
+
+    // Generate UUID (version 4)
+    function generateUUID() {
+      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0,
+              v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      uuidDisplay.textContent = uuid;
+    }
+
+    // Copy UUID to clipboard
+    function copyUUID() {
+      const text = uuidDisplay.textContent.trim();
+      if (text && text !== 'Your UUID will appear here...') {
+        navigator.clipboard.writeText(text);
+        alert('✅ UUID copied to clipboard!');
+      } else {
+        alert('⚠️ Please generate a UUID first.');
+      }
+    }
+
+    // Clear UUID display
+    function clearUUID() {
+      uuidDisplay.textContent = 'Your UUID will appear here...';
+    }
+  </script>
+</body>
+</html>
